@@ -8,14 +8,10 @@ import { toast } from "react-toastify"
 
 const TruckForm = () => {
   const [formData, setFormData] = useState({
-    licensePlate: "",
-    make: "",
-    model: "",
-    year: "",
-    status: "active",
-    currentDriver: "",
+   plate_number: "",
+    condition: "active",
+    mileage_factor: "",
   })
-  const [drivers, setDrivers] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const navigate = useNavigate()
@@ -23,32 +19,19 @@ const TruckForm = () => {
   const isEdit = Boolean(id)
 
   useEffect(() => {
-    fetchDrivers()
     if (isEdit) {
       fetchTruck()
     }
   }, [id])
-
-  const fetchDrivers = async () => {
-    try {
-      const response = await axios.get("/api/users?role=driver")
-      setDrivers(response.data)
-    } catch (error) {
-      console.error("Error fetching drivers:", error)
-    }
-  }
 
   const fetchTruck = async () => {
     try {
       const response = await axios.get(`/api/trucks/${id}`)
       const truck = response.data
       setFormData({
-        licensePlate: truck.licensePlate,
-        make: truck.make,
-        model: truck.model,
-        year: truck.year.toString(),
-        status: truck.status,
-        currentDriver: truck.currentDriver?._id || "",
+         plate_number: truck.plate_number,
+        condition: truck.condition,
+        mileage_factor: truck.mileage_factor.toString(),
       })
     } catch (error) {
       console.error("Error fetching truck:", error)
@@ -71,9 +54,9 @@ const TruckForm = () => {
 
     try {
       const submitData = {
-        ...formData,
-        year: Number.parseInt(formData.year),
-        currentDriver: formData.currentDriver || null,
+        plate_number: formData.plate_number,
+        condition: formData.condition,
+        mileage_factor: Number(formData.mileage_factor),
       }
 
       if (isEdit) {
@@ -106,86 +89,41 @@ const TruckForm = () => {
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
-                  <Form.Label>License Plate *</Form.Label>
+                  <Form.Label>Plate Number *</Form.Label>
                   <Form.Control
-                    type="text"
-                    name="licensePlate"
-                    value={formData.licensePlate}
+                     type="text"
+                    name="plate_number"
+                    value={formData.plate_number}
                     onChange={handleChange}
                     required
-                    placeholder="Enter license plate"
+                    placeholder="Enter plate number"
                   />
                 </Form.Group>
 
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Make *</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="make"
-                        value={formData.make}
-                        onChange={handleChange}
-                        required
-                        placeholder="e.g., Ford"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Model *</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        required
-                        placeholder="e.g., F-150"
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Year *</Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="year"
-                        value={formData.year}
-                        onChange={handleChange}
-                        required
-                        min="1900"
-                        max={new Date().getFullYear() + 1}
-                        placeholder="e.g., 2020"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Status</Form.Label>
-                      <Form.Select name="status" value={formData.status} onChange={handleChange}>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="maintenance">Maintenance</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Current Driver</Form.Label>
-                  <Form.Select name="currentDriver" value={formData.currentDriver} onChange={handleChange}>
-                    <option value="">Unassigned</option>
-                    {drivers.map((driver) => (
-                      <option key={driver._id} value={driver._id}>
-                        {driver.name}
-                      </option>
-                    ))}
+                  <Form.Group className="mb-3">
+                  <Form.Label>Condition *</Form.Label>
+                  <Form.Select name="condition" value={formData.condition} onChange={handleChange}>
+                    <option value="active">Active</option>
+                    <option value="maintenance_needed">Maintenance Needed</option>
+                    <option value="in_maintenance">In Maintenance</option>
+                    <option value="inactive">Inactive</option>
                   </Form.Select>
                 </Form.Group>
-
+                
+                 <Form.Group className="mb-3">
+                  <Form.Label>Mileage Factor *</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="mileage_factor"
+                    value={formData.mileage_factor}
+                    onChange={handleChange}
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="e.g., 1.2"
+                  />
+                </Form.Group>
+                
                 <div className="d-flex gap-2">
                   <Button variant="primary" type="submit" disabled={loading} className="flex-grow-1">
                     {loading ? (

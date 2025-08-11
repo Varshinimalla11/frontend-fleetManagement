@@ -49,13 +49,14 @@ const TruckList = () => {
     }
   }
 
-  const getStatusBadge = (status) => {
+   const getConditionBadge = (condition) => {
     const variants = {
       active: "success",
       inactive: "secondary",
-      maintenance: "warning",
+      maintenance_needed: "warning",
+      in_maintenance: "info",
     }
-    return <Badge bg={variants[status] || "secondary"}>{status}</Badge>
+    return <Badge bg={variants[condition] || "secondary"}>{condition}</Badge>
   }
 
   if (loading) {
@@ -94,27 +95,19 @@ const TruckList = () => {
                 <Table responsive hover>
                   <thead>
                     <tr>
-                      <th>License Plate</th>
-                      <th>Make & Model</th>
-                      <th>Year</th>
-                      <th>Status</th>
-                      <th>Current Driver</th>
+                       <th>Plate Number</th>
+                      <th>Condition</th>
+                      <th>Mileage Factor</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {trucks.map((truck) => (
                       <tr key={truck._id}>
-                        <td>
-                          <strong>{truck.licensePlate}</strong>
-                        </td>
-                        <td>
-                          {truck.make} {truck.model}
-                        </td>
-                        <td>{truck.year}</td>
-                        <td>{getStatusBadge(truck.status)}</td>
-                        <td>{truck.currentDriver ? truck.currentDriver.name : "Unassigned"}</td>
-                        <td>
+                         <td><strong>{truck.plate_number}</strong></td>
+                        <td>{getConditionBadge(truck.condition)}</td>
+                        <td>{truck.mileage_factor}</td>
+                      <td>
                           <div className="btn-group" role="group">
                             <Button as={Link} to={`/trucks/${truck._id}`} variant="outline-primary" size="sm">
                               <i className="fas fa-eye"></i>
@@ -163,7 +156,7 @@ const TruckList = () => {
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete truck {truckToDelete?.licensePlate}? This action cannot be undone.
+          Are you sure you want to delete truck {truckToDelete?.plate_number}? This action cannot be undone.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>

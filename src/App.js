@@ -13,6 +13,7 @@ import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import TruckList from "./pages/TruckList"
 import TruckForm from "./pages/TruckForm"
+import TruckDetails from "./pages/TruckDetails"
 import TripList from "./pages/TripList"
 import TripForm from "./pages/TripForm"
 import TripDetails from "./pages/TripDetails"
@@ -70,6 +71,11 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+
+                <Route path="/trucks/:id" element={
+                  <ProtectedRoute roles={["owner", "admin"]}>
+                    <TruckDetails />
+                  </ProtectedRoute>} />
 
                 <Route
                   path="/trips"
