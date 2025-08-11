@@ -1,70 +1,157 @@
-# Getting Started with Create React App
+# Truck Fleet Management Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React.js frontend application for managing truck fleets with role-based access control.
+
+## Features
+
+- **Authentication & Authorization**: Login/Register with role-based access (Admin, Owner, Driver)
+- **Dashboard**: Overview of fleet statistics and quick actions
+- **Truck Management**: Add, edit, view, and delete trucks
+- **Trip Management**: Create and manage trips with detailed tracking
+- **Drive Session Tracking**: Start/stop drive sessions with real-time monitoring
+- **Refuel Event Logging**: Log and track fuel consumption and costs
+- **Notifications**: Real-time notifications system
+- **User Management**: Invite drivers to join the fleet
+- **Responsive Design**: Bootstrap-based responsive UI
+
+## Tech Stack
+
+- **Frontend**: React.js 18
+- **UI Framework**: Bootstrap 5 + React Bootstrap
+- **Routing**: React Router DOM
+- **HTTP Client**: Axios
+- **Icons**: Font Awesome
+- **Date Handling**: Moment.js
+- **Notifications**: React Toastify
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- Backend API server running on port 3000
+
+### Installation
+
+1. **Create the React app**:
+   \`\`\`bash
+   npx create-react-app truck-fleet-frontend
+   cd truck-fleet-frontend
+   \`\`\`
+
+2. **Replace the generated files** with the files from this project
+
+3. **Install dependencies**:
+   \`\`\`bash
+   npm install
+   \`\`\`
+
+4. **Start the development server**:
+   \`\`\`bash
+   npm start
+   \`\`\`
+
+The application will open at `http://localhost:3001` (since port 3000 is used by the backend).
+
+### Backend Configuration
+
+Make sure your backend API is running on `http://localhost:3000`. The frontend is configured to proxy API requests to this URL.
+
+If your backend runs on a different port, update the `proxy` field in `package.json`:
+
+\`\`\`json
+{
+"proxy": "http://localhost:YOUR_BACKEND_PORT"
+}
+\`\`\`
+
+## Project Structure
+
+\`\`\`
+src/
+├── components/ # Reusable components
+│ ├── Navbar.js # Navigation bar
+│ └── ProtectedRoute.js # Route protection
+├── contexts/ # React contexts
+│ ├── AuthContext.js # Authentication context
+│ └── NotificationContext.js # Notifications context
+├── pages/ # Page components
+│ ├── Dashboard.js # Main dashboard
+│ ├── Login.js # Login page
+│ ├── Register.js # Registration page
+│ ├── TruckList.js # Truck listing
+│ ├── TruckForm.js # Add/Edit truck
+│ ├── TripList.js # Trip listing
+│ ├── TripForm.js # Create trip
+│ ├── TripDetails.js # Trip details
+│ ├── DriveSessionList.js # Drive sessions
+│ ├── RefuelEventList.js # Refuel events
+│ ├── NotificationList.js # Notifications
+│ └── InviteDriver.js # Invite drivers
+├── App.js # Main app component
+├── App.css # Global styles
+└── index.js # App entry point
+\`\`\`
+
+## User Roles & Permissions
+
+### Admin
+
+- Full access to all features
+- Can manage all trucks, trips, and users
+- Can view all data across the system
+
+### Owner
+
+- Can manage trucks and trips
+- Can invite drivers
+- Can view data for their fleet
+
+### Driver
+
+- Can view assigned trucks and trips
+- Can start/stop drive sessions
+- Can log refuel events
+- Can view notifications
+
+## API Integration
+
+The frontend integrates with the backend API using Axios. Key endpoints:
+
+- `POST /api/auth/login` - User authentication
+- `POST /api/auth/register` - User registration
+- `GET /api/trucks` - Get trucks
+- `POST /api/trucks` - Create truck
+- `GET /api/trips` - Get trips
+- `POST /api/trips` - Create trip
+- `POST /api/drive-sessions/start` - Start drive session
+- `POST /api/refuel-events` - Log refuel event
+- `GET /api/notifications` - Get notifications
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Start development server
+- `npm build` - Build for production
+- `npm test` - Run tests
+- `npm eject` - Eject from Create React App
 
-### `npm start`
+## Environment Variables
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Create a `.env` file in the root directory for environment-specific configurations:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+\`\`\`env
+REACT_APP_API_URL=http://localhost:3000
+\`\`\`
 
-### `npm test`
+## Contributing
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-### `npm run build`
+## License
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is licensed under the MIT License.
