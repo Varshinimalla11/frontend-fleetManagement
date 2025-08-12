@@ -1,11 +1,19 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Container, Row, Col, Card, Button, Table, Badge } from "react-bootstrap"
-import { Link } from "react-router-dom"
-import axios from "axios"
-import { useAuth } from "../contexts/AuthContext"
-import { toast } from "react-toastify"
+import { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Table,
+  Badge,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -13,47 +21,52 @@ const Dashboard = () => {
     activeTrips: 0,
     totalDrivers: 0,
     recentActivities: [],
-  })
-  const [loading, setLoading] = useState(true)
-  const { user } = useAuth()
+  });
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    fetchDashboardData()
-  }, [])
+    fetchDashboardData();
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
-      const [trucksRes, tripsRes, driversRes, activitiesRes] = await Promise.all([
-        axios.get("/api/trucks"),
-        axios.get("/api/trips"),
-        axios.get("/api/users?role=driver"),
-        axios.get("/api/notifications?limit=5"),
-      ])
+      const [trucksRes, tripsRes, driversRes, activitiesRes] =
+        await Promise.all([
+          axios.get("/api/trucks"),
+          axios.get("/api/trips"),
+          axios.get("/api/auth/my-drivers"),
+          axios.get("/api/notifications?limit=5"),
+        ]);
 
       setStats({
         totalTrucks: trucksRes.data.length,
-        activeTrips: tripsRes.data.filter((trip) => trip.status === "active").length,
+        activeTrips: tripsRes.data.filter((trip) => trip.status === "active")
+          .length,
         totalDrivers: driversRes.data.length,
         recentActivities: activitiesRes.data,
-      })
+      });
     } catch (error) {
-      console.error("Error fetching dashboard data:", error)
-      toast.error("Error loading dashboard data")
+      console.error("Error fetching dashboard data:", error);
+      toast.error("Error loading dashboard data");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (loading) {
     return (
       <Container>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: "400px" }}>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "400px" }}
+        >
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       </Container>
-    )
+    );
   }
 
   return (
@@ -130,7 +143,11 @@ const Dashboard = () => {
                     </Button>
                   </>
                 )}
-                <Button as={Link} to="/drive-sessions" variant="outline-primary">
+                <Button
+                  as={Link}
+                  to="/drive-sessions"
+                  variant="outline-primary"
+                >
                   <i className="fas fa-clock me-2"></i>
                   View Drive Sessions
                 </Button>
@@ -156,10 +173,18 @@ const Dashboard = () => {
                     {stats.recentActivities.map((activity, index) => (
                       <tr key={index}>
                         <td>
-                          <Badge bg={activity.type === "info" ? "primary" : "warning"}>{activity.type}</Badge>
+                          <Badge
+                            bg={
+                              activity.type === "info" ? "primary" : "warning"
+                            }
+                          >
+                            {activity.type}
+                          </Badge>
                         </td>
                         <td>{activity.message}</td>
-                        <td className="text-muted small">{new Date(activity.createdAt).toLocaleDateString()}</td>
+                        <td className="text-muted small">
+                          {new Date(activity.createdAt).toLocaleDateString()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -172,7 +197,7 @@ const Dashboard = () => {
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

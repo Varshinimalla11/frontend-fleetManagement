@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Alert,
+} from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -13,6 +21,8 @@ const RegisterDriver = () => {
     name: "",
     email: "",
     phone: "",
+    aadhar_number: "",
+    license_number: "",
     password: "",
     confirmPassword: "",
   });
@@ -28,8 +38,9 @@ const RegisterDriver = () => {
         return;
       }
       try {
-        await axios.post("/api/invitetokens/verify", { token });
+        const res = await axios.post("/api/invitetokens/verify", { token });
         setValidToken(true);
+        setFormData((prev) => ({ ...prev, email: res.data.email }));
       } catch (err) {
         setError("Invalid or expired invite token.");
       }
@@ -87,7 +98,7 @@ const RegisterDriver = () => {
 
   return (
     <Container>
-      <Row className="justify-content-center">
+      <Row className="justify-content-md-center">
         <Col md={6} lg={5}>
           <Card className="mt-5">
             <Card.Body>
@@ -112,8 +123,9 @@ const RegisterDriver = () => {
                     type="email"
                     name="email"
                     value={formData.email}
-                    onChange={handleChange}
-                    required
+                    disabled
+                    // onChange={handleChange}
+                    // required
                     placeholder="Enter your email"
                   />
                 </Form.Group>
@@ -128,6 +140,26 @@ const RegisterDriver = () => {
                     required
                     placeholder="Enter phone number"
                     minLength="10"
+                  />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label>Aadhar Number</Form.Label>
+                  <Form.Control
+                    name="aadhar_number"
+                    value={formData.aadhar_number}
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label>License Number</Form.Label>
+                  <Form.Control
+                    name="license_number"
+                    value={formData.license_number}
+                    onChange={handleChange}
+                    required
                   />
                 </Form.Group>
 

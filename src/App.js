@@ -1,27 +1,33 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { ToastContainer } from "react-toastify"
-import "bootstrap/dist/css/bootstrap.min.css"
-import "react-toastify/dist/ReactToastify.css"
-import "@fortawesome/fontawesome-free/css/all.min.css"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import { AuthProvider } from "./contexts/AuthContext"
-import { NotificationProvider } from "./contexts/NotificationContext"
-import ProtectedRoute from "./components/ProtectedRoute"
-import Navbar from "./components/Navbar"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
-import Dashboard from "./pages/Dashboard"
-import TruckList from "./pages/TruckList"
-import TruckForm from "./pages/TruckForm"
-import TruckDetails from "./pages/TruckDetails"
-import TripList from "./pages/TripList"
-import TripForm from "./pages/TripForm"
-import TripDetails from "./pages/TripDetails"
-import DriveSessionList from "./pages/DriveSessionList"
-import RefuelEventList from "./pages/RefuelEventList"
-import NotificationList from "./pages/NotificationList"
-import InviteDriver from "./pages/InviteDriver"
-import "./App.css"
+import { AuthProvider } from "./contexts/AuthContext";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import RegisterDriver from "./pages/RegisterDriver";
+import Dashboard from "./pages/Dashboard";
+import TruckList from "./pages/TruckList";
+import TruckForm from "./pages/TruckForm";
+import TruckDetails from "./pages/TruckDetails";
+import TripList from "./pages/TripList";
+import TripForm from "./pages/TripForm";
+import TripDetails from "./pages/TripDetails";
+import DriveSessionList from "./pages/DriveSessionList";
+import RefuelEventList from "./pages/RefuelEventList";
+import NotificationList from "./pages/NotificationList";
+import InviteDriver from "./pages/InviteDriver";
+import "./App.css";
 
 function App() {
   return (
@@ -34,8 +40,11 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
+                <Route
+                  path="/"
+                  element={<Navigate to="/dashboard" replace />}
+                />
+                <Route path="/register-driver" element={<RegisterDriver />} />
                 <Route
                   path="/dashboard"
                   element={
@@ -72,10 +81,14 @@ function App() {
                   }
                 />
 
-                <Route path="/trucks/:id" element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TruckDetails />
-                  </ProtectedRoute>} />
+                <Route
+                  path="/trucks/:id"
+                  element={
+                    <ProtectedRoute roles={["owner", "admin"]}>
+                      <TruckDetails />
+                    </ProtectedRoute>
+                  }
+                />
 
                 <Route
                   path="/trips"
@@ -146,7 +159,7 @@ function App() {
         </Router>
       </NotificationProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

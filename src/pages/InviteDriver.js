@@ -1,47 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap"
-import axios from "axios"
-import { toast } from "react-toastify"
+import { useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Alert,
+} from "react-bootstrap";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const InviteDriver = () => {
   const [formData, setFormData] = useState({
     email: "",
     name: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-    setSuccess("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
     try {
-        await axios.post("/api/invitetokens/send", formData, {
-  headers: { "x-auth-token": localStorage.getItem("token") }
-});
-    
-      setSuccess(`Invitation sent successfully to ${formData.email}`)
-      setFormData({ email: "", name: "" })
-      toast.success("Driver invitation sent!")
+      await axios.post(
+        "/api/invitetokens/send",
+        { email: formData.email },
+        {
+          headers: { "x-auth-token": localStorage.getItem("token") },
+        }
+      );
+
+      setSuccess(`Invitation sent successfully to ${formData.email}`);
+      setFormData({ email: "", name: "" });
+      toast.success("Driver invitation sent!");
     } catch (error) {
-      console.error("Error sending invitation:", error)
-      setError(error.response?.data?.message || "Error sending invitation")
+      console.error("Error sending invitation:", error);
+      setError(error.response?.data?.message || "Error sending invitation");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Container>
@@ -50,7 +62,9 @@ const InviteDriver = () => {
           <Card>
             <Card.Header>
               <h3>Invite Driver</h3>
-              <p className="text-muted mb-0">Send an invitation to a new driver to join your fleet</p>
+              <p className="text-muted mb-0">
+                Send an invitation to a new driver to join your fleet
+              </p>
             </Card.Header>
             <Card.Body>
               {error && <Alert variant="danger">{error}</Alert>}
@@ -80,14 +94,23 @@ const InviteDriver = () => {
                     placeholder="Enter driver's email address"
                   />
                   <Form.Text className="text-muted">
-                    An invitation email will be sent to this address with registration instructions.
+                    An invitation email will be sent to this address with
+                    registration instructions.
                   </Form.Text>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" disabled={loading} className="w-100">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={loading}
+                  className="w-100"
+                >
                   {loading ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
                       Sending Invitation...
                     </>
                   ) : (
@@ -103,9 +126,13 @@ const InviteDriver = () => {
                 <h6>How it works:</h6>
                 <ol className="mb-0 small">
                   <li>Enter the driver's name and email address</li>
-                  <li>An invitation email will be sent with a registration link</li>
+                  <li>
+                    An invitation email will be sent with a registration link
+                  </li>
                   <li>The driver can use the link to create their account</li>
-                  <li>Once registered, they'll have access to the driver dashboard</li>
+                  <li>
+                    Once registered, they'll have access to the driver dashboard
+                  </li>
                 </ol>
               </div>
             </Card.Body>
@@ -113,7 +140,7 @@ const InviteDriver = () => {
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default InviteDriver
+export default InviteDriver;
