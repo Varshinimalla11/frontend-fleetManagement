@@ -2,7 +2,8 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./App"
 import axios from "axios"
-
+import {store} from "./redux/store"
+import { Provider } from "react-redux"
 // Set up axios base URL - change this to match your backend server
 axios.defaults.baseURL = "http://localhost:3000"
 
@@ -34,7 +35,9 @@ axios.interceptors.response.use(
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
+  <Provider store={store}>
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Provider>
 )
