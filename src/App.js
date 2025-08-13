@@ -28,6 +28,7 @@ import RefuelEventList from "./pages/RefuelEventList";
 import NotificationList from "./pages/NotificationList";
 import InviteDriver from "./pages/InviteDriver";
 import "./App.css";
+import NotificationToast from "./pages/NotificationToast";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Router>
           <div className="App">
             <Navbar />
+            <NotificationToast />
             <div className="container-fluid mt-4">
               <Routes>
                 <Route path="/login" element={<Login />} />

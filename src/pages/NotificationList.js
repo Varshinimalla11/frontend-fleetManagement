@@ -1,10 +1,18 @@
-"use client"
-import { Container, Row, Col, Card, Button, ListGroup, Badge } from "react-bootstrap"
-import { useNotifications } from "../contexts/NotificationContext"
-import moment from "moment"
+"use client";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  ListGroup,
+  Badge,
+} from "react-bootstrap";
+import { useNotifications } from "../contexts/NotificationContext";
+import moment from "moment";
 
 const NotificationList = () => {
-  const { notifications, markAsRead, markAllAsRead } = useNotifications()
+  const { notifications, markAsSeen, markAllAsSeen } = useNotifications();
 
   const getTypeIcon = (type) => {
     const icons = {
@@ -12,11 +20,11 @@ const NotificationList = () => {
       warning: "fas fa-exclamation-triangle text-warning",
       error: "fas fa-exclamation-circle text-danger",
       success: "fas fa-check-circle text-success",
-    }
-    return icons[type] || "fas fa-bell text-secondary"
-  }
+    };
+    return icons[type] || "fas fa-bell text-secondary";
+  };
 
-  const unreadNotifications = notifications.filter((n) => !n.read)
+  const unreadNotifications = notifications.filter((n) => !n.seen);
 
   return (
     <Container>
@@ -32,7 +40,7 @@ const NotificationList = () => {
               )}
             </h1>
             {unreadNotifications.length > 0 && (
-              <Button variant="outline-primary" onClick={markAllAsRead}>
+              <Button variant="outline-primary" onClick={markAllAsSeen}>
                 Mark All as Read
               </Button>
             )}
@@ -50,24 +58,36 @@ const NotificationList = () => {
                     <ListGroup.Item
                       key={notification._id}
                       className={`d-flex justify-content-between align-items-start ${
-                        !notification.read ? "bg-light" : ""
+                        !notification.seen ? "bg-light" : ""
                       }`}
                     >
                       <div className="ms-2 me-auto">
                         <div className="d-flex align-items-center mb-1">
-                          <i className={`${getTypeIcon(notification.type)} me-2`}></i>
-                          <strong className={!notification.read ? "text-primary" : ""}>{notification.title}</strong>
-                          {!notification.read && (
+                          <i
+                            className={`${getTypeIcon(notification.type)} me-2`}
+                          ></i>
+                          <strong
+                            className={!notification.seen ? "text-primary" : ""}
+                          >
+                            {notification.title}
+                          </strong>
+                          {!notification.seen && (
                             <Badge bg="primary" className="ms-2">
                               New
                             </Badge>
                           )}
                         </div>
                         <p className="mb-1">{notification.message}</p>
-                        <small className="text-muted">{moment(notification.createdAt).fromNow()}</small>
+                        <small className="text-muted">
+                          {moment(notification.createdAt).fromNow()}
+                        </small>
                       </div>
-                      {!notification.read && (
-                        <Button variant="outline-primary" size="sm" onClick={() => markAsRead(notification._id)}>
+                      {!notification.seen && (
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => markAsSeen(notification._id)}
+                        >
                           Mark as Read
                         </Button>
                       )}
@@ -78,7 +98,9 @@ const NotificationList = () => {
                 <div className="text-center py-5">
                   <i className="fas fa-bell fa-3x text-muted mb-3"></i>
                   <h4>No notifications</h4>
-                  <p className="text-muted">You're all caught up! Notifications will appear here.</p>
+                  <p className="text-muted">
+                    You're all caught up! Notifications will appear here.
+                  </p>
                 </div>
               )}
             </Card.Body>
@@ -86,7 +108,7 @@ const NotificationList = () => {
         </Col>
       </Row>
     </Container>
-  )
-}
+  );
+};
 
-export default NotificationList
+export default NotificationList;

@@ -1,17 +1,23 @@
-"use client"
+"use client";
 
-import { Navbar as BootstrapNavbar, Nav, NavDropdown, Container, Badge } from "react-bootstrap"
-import { LinkContainer } from "react-router-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { useNotifications } from "../contexts/NotificationContext"
+import {
+  Navbar as BootstrapNavbar,
+  Nav,
+  NavDropdown,
+  Container,
+  Badge,
+} from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import { useAuth } from "../contexts/AuthContext";
+import { useNotifications } from "../contexts/NotificationContext";
 
 const Navbar = () => {
-  const { user, logout } = useAuth()
-  const { unreadCount } = useNotifications()
+  const { user, logout } = useAuth();
+  const { unreadCount } = useNotifications();
 
   const handleLogout = () => {
-    logout()
-  }
+    logout();
+  };
 
   return (
     <BootstrapNavbar bg="dark" variant="dark" expand="lg" sticky="top">
@@ -75,12 +81,16 @@ const Navbar = () => {
 
               <Nav>
                 <LinkContainer to="/notifications">
-                  <Nav.Link>
+                  <Nav.Link className="position-relative">
                     <i className="fas fa-bell me-1"></i>
                     Notifications
                     {unreadCount > 0 && (
-                      <Badge bg="danger" className="ms-1">
-                        {unreadCount}
+                      <Badge
+                        bg="danger"
+                        className="position-absolute top-0 start-100 translate-middle rounded-pill"
+                        style={{ fontSize: "0.6rem" }}
+                      >
+                        {unreadCount > 9 ? "9+" : unreadCount}
                       </Badge>
                     )}
                   </Nav.Link>
@@ -95,7 +105,9 @@ const Navbar = () => {
                   }
                   id="user-dropdown"
                 >
-                  <NavDropdown.Item disabled>Role: {user.role}</NavDropdown.Item>
+                  <NavDropdown.Item disabled>
+                    Role: {user.role}
+                  </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleLogout}>
                     <i className="fas fa-sign-out-alt me-1"></i>
@@ -117,7 +129,7 @@ const Navbar = () => {
         </BootstrapNavbar.Collapse>
       </Container>
     </BootstrapNavbar>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

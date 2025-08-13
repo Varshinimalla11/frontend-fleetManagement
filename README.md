@@ -30,7 +30,7 @@ A React.js frontend application for managing truck fleets with role-based access
 
 - Node.js (v14 or higher)
 - npm or yarn
-- Backend API server running on port 3000
+- Backend API server running on port 4000
 
 ### Installation
 
@@ -52,11 +52,11 @@ A React.js frontend application for managing truck fleets with role-based access
    npm start
    \`\`\`
 
-The application will open at `http://localhost:3001` (since port 3000 is used by the backend).
+The application will open at `http://localhost:3000` (since port 3000 is used by the backend).
 
 ### Backend Configuration
 
-Make sure your backend API is running on `http://localhost:3000`. The frontend is configured to proxy API requests to this URL.
+Make sure your backend API is running on `http://localhost:4000`. The frontend is configured to proxy API requests to this URL.
 
 If your backend runs on a different port, update the `proxy` field in `package.json`:
 
