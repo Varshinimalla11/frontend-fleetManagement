@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Row,
@@ -8,15 +8,20 @@ import {
   Button,
   Alert,
 } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "./authApi";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 
 const Login = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const [login, { isLoading }] = useLoginMutation();
+  const [loading, setLoading] = useState(false);
+
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,50 +31,65 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await login(formData).unwrap();
-      localStorage.setItem("token", res.token);
-      toast.success("Login successful");
-      navigate("/dashboard");
+      setLoading(true);
+      await login(formData);
+      toast.success("✅ Login successful");
+      navigate(from, { replace: true });
     } catch (err) {
-      setError(err.data?.message || "Invalid credentials");
+      setError(err?.data?.message || "Invalid credentials");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <Row className="justify-content-center mt-5">
-        <Col md={6}>
+    <Container className="mt-5">
+      <Row className="justify-content-center">
+        <Col md={5}>
           <Card>
             <Card.Header>
-              <h3>Login</h3>
+              <h3 className="mb-0">Login</h3>
             </Card.Header>
             <Card.Body>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3" controlId="formEmail">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    placeholder="Enter your email"
                     required
                   />
                 </Form.Group>
-                <Form.Group className="mb-3">
+
+                <Form.Group className="mb-3" controlId="formPassword">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    placeholder="Enter your password"
                     required
                   />
                 </Form.Group>
-                <Button type="submit" variant="primary" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-100"
+                  disabled={loading}
+                >
+                  {loading ? "Logging in..." : "Login"}
                 </Button>
               </Form>
+
+              <div className="text-center">
+                New user? <Link to="/register">Register here</Link>
+              </div>
             </Card.Body>
           </Card>
         </Col>

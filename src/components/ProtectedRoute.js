@@ -1,37 +1,43 @@
-"use client"
+"use client";
 
-import { Navigate } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
+import React from "react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-const ProtectedRoute = ({ children, roles = [] }) => {
-  const { user, loading } = useAuth()
+const ProtectedRoute = ({ roles = [], children }) => {
+  const { token, user, loading } = useAuth(); // ✅ now includes user
+  const location = useLocation();
 
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
-        <div className="spinner-border" role="status">
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />
+  // Not logged in? Redirect to login
+  if (!token || !user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roles.length > 0 && !roles.includes(user.role)) {
+  // Role check (if roles are specified)
+  if (roles.length > 0 && !roles.includes(user.role?.toLowerCase())) {
     return (
       <div className="container mt-5">
         <div className="alert alert-danger" role="alert">
           <h4 className="alert-heading">Access Denied</h4>
           <p>You don't have permission to access this page.</p>
         </div>
+        <Navigate to="/dashboard" replace />
       </div>
-    )
+    );
   }
 
-  return children
-}
+  // Render either children (if passed) or Outlet (nested routes)
+  return children ? children : <Outlet />;
+};
 
-export default ProtectedRoute
+export default ProtectedRoute;

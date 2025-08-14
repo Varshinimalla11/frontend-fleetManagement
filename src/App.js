@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,157 +8,61 @@ import {
 import { ToastContainer } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotificationProvider } from "./contexts/NotificationContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import RegisterDriver from "./pages/RegisterDriver";
-import Dashboard from "./pages/Dashboard";
-import TruckList from "./pages/TruckList";
-import TruckForm from "./pages/TruckForm";
-import TruckDetails from "./pages/TruckDetails";
-import TripList from "./pages/TripList";
-import TripForm from "./pages/TripForm";
-import TripDetails from "./pages/TripDetails";
-import DriveSessionList from "./pages/DriveSessionList";
-import RefuelEventList from "./pages/RefuelEventList";
-import NotificationList from "./pages/NotificationList";
-import InviteDriver from "./pages/InviteDriver";
+import Layout from "./components/Layout";
+import Login from "./features/auth/Login";
+import Register from "./features/auth/Register";
+import RegisterDriverFromInvite from "./features/registerDriverFromInvite/RegisterDriverFromInvite";
+import Dashboard from "./features/dashboard/Dashboard";
+import InviteDriver from "./features/inviteDriver/InviteDriver";
+import TruckDetails from "./features/trucks/TruckDetails";
+import TruckForm from "./features/trucks/TruckForm";
+import TruckList from "./features/trucks/TruckList";
 import "./App.css";
-import NotificationToast from "./pages/NotificationToast";
 
 function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
         <Router>
-          <div className="App">
-            <Navbar />
-            <NotificationToast />
-            <div className="container-fluid mt-4">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route
-                  path="/"
-                  element={<Navigate to="/dashboard" replace />}
-                />
-                <Route path="/register-driver" element={<RegisterDriver />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
+          <ToastContainer position="top-right" autoClose={3000} />
 
-                <Route
-                  path="/trucks"
-                  element={
-                    <ProtectedRoute>
-                      <TruckList />
-                    </ProtectedRoute>
-                  }
-                />
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/register-driver"
+              element={<RegisterDriverFromInvite />}
+            />
 
-                <Route
-                  path="/trucks/new"
-                  element={
-                    <ProtectedRoute roles={["owner", "admin"]}>
-                      <TruckForm />
-                    </ProtectedRoute>
-                  }
-                />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-                <Route
-                  path="/trucks/:id/edit"
-                  element={
-                    <ProtectedRoute roles={["owner", "admin"]}>
-                      <TruckForm />
-                    </ProtectedRoute>
-                  }
-                />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
 
-                <Route
-                  path="/trucks/:id"
-                  element={
-                    <ProtectedRoute roles={["owner", "admin"]}>
-                      <TruckDetails />
-                    </ProtectedRoute>
-                  }
-                />
+                {/* Owner/Admin only */}
+                <Route element={<ProtectedRoute roles={["owner", "admin"]} />}>
+                  <Route path="/invite-driver" element={<InviteDriver />} />
+                </Route>
 
-                <Route
-                  path="/trips"
-                  element={
-                    <ProtectedRoute>
-                      <TripList />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/trips/new"
-                  element={
-                    <ProtectedRoute roles={["owner", "admin"]}>
-                      <TripForm />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/trips/:id"
-                  element={
-                    <ProtectedRoute>
-                      <TripDetails />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/drive-sessions"
-                  element={
-                    <ProtectedRoute>
-                      <DriveSessionList />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/refuel-events"
-                  element={
-                    <ProtectedRoute>
-                      <RefuelEventList />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/notifications"
-                  element={
-                    <ProtectedRoute>
-                      <NotificationList />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="/invite-driver"
-                  element={
-                    <ProtectedRoute roles={["owner", "admin"]}>
-                      <InviteDriver />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </div>
-            <ToastContainer position="top-right" autoClose={5000} />
-          </div>
+                <Route element={<ProtectedRoute roles={["owner", "admin"]} />}>
+                  <Route path="/trucks" element={<TruckList />} />
+                  <Route path="/trucks/new" element={<TruckForm />} />
+                  <Route path="/trucks/:id" element={<TruckDetails />} />
+                  <Route path="/trucks/:id/edit" element={<TruckForm />} />
+                </Route>
+              </Route>
+            </Route>
+            {/* Catch-all 404 */}
+            <Route
+              path="*"
+              element={<div className="p-5">Page Not Found</div>}
+            />
+          </Routes>
         </Router>
       </NotificationProvider>
     </AuthProvider>
@@ -165,3 +70,155 @@ function App() {
 }
 
 export default App;
+
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <NotificationProvider>
+//         <Router>
+//           <div className="App">
+//             <Navbar />
+//             <NotificationToast />
+//             <div className="container-fluid mt-4">
+//               <Routes>
+//                 <Route path="/login" element={<Login />} />
+//                 <Route path="/register" element={<Register />} />
+//                 <Route
+//                   path="/"
+//                   element={<Navigate to="/dashboard" replace />}
+//                 />
+//                 <Route path="/register-driver" element={<RegisterDriver />} />
+//                 <Route
+//                   path="/dashboard"
+//                   element={
+//                     <ProtectedRoute>
+//                       <Dashboard />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trucks"
+//                   element={
+//                     <ProtectedRoute>
+//                       <TruckList />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+//                 <Routes>
+//                   {/* Owner/Admin only */}
+//                   <Route
+//                     path="/invite-driver"
+//                     element={
+//                       <ProtectedRoute>
+//                         <InviteDriver />
+//                       </ProtectedRoute>
+//                     }
+//                   />
+
+//                   {/* Driver registration via invite */}
+//                   <Route
+//                     path="/register-driver/:token"
+//                     element={<RegisterDriverFromInvite />}
+//                   />
+//                 </Routes>
+//                 <Route
+//                   path="/trucks/new"
+//                   element={
+//                     <ProtectedRoute roles={["owner", "admin"]}>
+//                       <TruckForm />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trucks/:id/edit"
+//                   element={
+//                     <ProtectedRoute roles={["owner", "admin"]}>
+//                       <TruckForm />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trucks/:id"
+//                   element={
+//                     <ProtectedRoute roles={["owner", "admin"]}>
+//                       <TruckDetails />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trips"
+//                   element={
+//                     <ProtectedRoute>
+//                       <TripList />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trips/new"
+//                   element={
+//                     <ProtectedRoute roles={["owner", "admin"]}>
+//                       <TripForm />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/trips/:id"
+//                   element={
+//                     <ProtectedRoute>
+//                       <TripDetails />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/drive-sessions"
+//                   element={
+//                     <ProtectedRoute>
+//                       <DriveSessionList />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/refuel-events"
+//                   element={
+//                     <ProtectedRoute>
+//                       <RefuelEventList />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/notifications"
+//                   element={
+//                     <ProtectedRoute>
+//                       <NotificationList />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+
+//                 <Route
+//                   path="/invite-driver"
+//                   element={
+//                     <ProtectedRoute roles={["owner", "admin"]}>
+//                       <InviteDriver />
+//                     </ProtectedRoute>
+//                   }
+//                 />
+//               </Routes>
+//             </div>
+//             <ToastContainer position="top-right" autoClose={5000} />
+//           </div>
+//         </Router>
+//       </NotificationProvider>
+//     </AuthProvider>
+//   );
+// }
+
+// export default App;

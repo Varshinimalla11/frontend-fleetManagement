@@ -11,7 +11,7 @@ import {
   useGetDashboardStatsQuery,
   useGetRecentTripsQuery,
   useGetRecentDriveSessionsQuery,
-} from "./dashboardApi";
+} from "../../api/dashboardApi";
 import moment from "moment";
 
 const Dashboard = () => {

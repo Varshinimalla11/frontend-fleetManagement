@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useCreateTripMutation } from "./tripsApi";
 import { toast } from "react-toastify";
-import { useGetDriversQuery } from "../auth/authApi";
+import { useGetDriversQuery } from "../../api/authApi";
 // import { useGetTrucksQuery } from "../dashboard/dashboardApi";
 import { useGetTrucksQuery } from "../features/trucks/trucksApi";
 
