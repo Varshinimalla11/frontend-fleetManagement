@@ -4,9 +4,11 @@ export const trucksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTrucks: builder.query({
       query: () => "/trucks",
+       providesTags: ['Trucks']
     }),
     getTruckById: builder.query({
       query: (id) => `/trucks/${id}`,
+       providesTags: (result, error, id) => [{ type: 'Trucks', id }, 'Trucks'],
     }),
     createTruck: builder.mutation({
       query: (newTruck) => ({
@@ -14,6 +16,7 @@ export const trucksApi = baseApi.injectEndpoints({
         method: "POST",
         body: newTruck,
       }),
+      invalidatesTags: ['Trucks'], 
     }),
     updateTruck: builder.mutation({
       query: ({ id, ...truckData }) => ({
@@ -21,12 +24,14 @@ export const trucksApi = baseApi.injectEndpoints({
         method: "PUT",
         body: truckData,
       }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Trucks', id }, 'Trucks'],
     }),
     deleteTruck: builder.mutation({
       query: (id) => ({
         url: `/trucks/${id}`,
         method: "DELETE",
       }),
+       invalidatesTags: (result, error, id) => [{ type: 'Trucks', id }, 'Trucks'],
     }),
   }),
   overrideExisting: false,

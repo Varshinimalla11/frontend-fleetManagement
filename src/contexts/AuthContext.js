@@ -28,6 +28,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (currentUser) {
       setUser(currentUser);
+    }  else {
+      setUser(null);
     }
   }, [currentUser]);
 
@@ -55,7 +57,9 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       const res = await loginApi(credentials).unwrap();
+        localStorage.setItem("token", res.token); 
       setToken(res.token);
+        if (res.user) setUser(res.user);
       return res;
     } catch (error) {
       console.error("Login error:", error);
@@ -82,6 +86,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     localStorage.removeItem("token");
+      setUser(null);
     disconnectSocket();
   };
 

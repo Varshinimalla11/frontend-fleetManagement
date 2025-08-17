@@ -1,27 +1,77 @@
+import React from "react";
 import {
   Container,
   Row,
   Col,
   Card,
-  Spinner,
   Table,
   Badge,
+  Spinner,
 } from "react-bootstrap";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   useGetDashboardStatsQuery,
   useGetRecentTripsQuery,
   useGetRecentDriveSessionsQuery,
 } from "../../api/dashboardApi";
+import { useGetTripsQuery, useGetMyTripsQuery } from "../../api/tripsApi";
+import { useGetTrucksQuery } from "../../api/trucksApi";
 import moment from "moment";
 
 const Dashboard = () => {
-  const { data: stats, isLoading: loadingStats } = useGetDashboardStatsQuery();
-  const { data: recentTrips = [], isLoading: loadingTrips } =
-    useGetRecentTripsQuery();
-  const { data: recentSessions = [], isLoading: loadingSessions } =
+  const { user } = useAuth();
+  const isDriver = user?.role === "driver";
+  const isOwner = user?.role === "owner";
+  const isAdmin = user?.role === "admin";
+
+  // Hook for trucks - owners/admins fetch, drivers skip
+  const { data: trucks = [], isLoading: loadingTrucks } = useGetTrucksQuery(
+    undefined,
+    {
+      skip: !isOwner && !isAdmin,
+    }
+  );
+
+  // Always call both trip hooks to obey hooks rules
+  const { data: driverTrips = [], isLoading: loadingDriverTrips } =
+    useGetMyTripsQuery(undefined, {
+      skip: !isDriver,
+    });
+  const { data: allTrips = [], isLoading: loadingAllTrips } = useGetTripsQuery(
+    undefined,
+    {
+      skip: isDriver,
+    }
+  );
+
+  // Choose trips depending on role
+  const trips = isDriver ? driverTrips : allTrips;
+  const loadingTrips = isDriver ? loadingDriverTrips : loadingAllTrips;
+
+  // Dashboard stats only for owner/admin
+  const { data: stats, isLoading: loadingStats } = useGetDashboardStatsQuery(
+    undefined,
+    {
+      skip: isDriver,
+    }
+  );
+
+  // Recent trips for owner/admin (skip driver)
+  const { data: recentTrips = [], isLoading: loadingRecentTrips } =
+    useGetRecentTripsQuery(undefined, {
+      skip: isDriver,
+    });
+
+  const { data: recentSessions = [], isLoading: loadingRecentSessions } =
     useGetRecentDriveSessionsQuery();
 
-  if (loadingStats || loadingTrips || loadingSessions) {
+  if (
+    loadingTrucks ||
+    loadingTrips ||
+    (loadingStats && !isDriver) ||
+    loadingRecentTrips ||
+    loadingRecentSessions
+  ) {
     return (
       <div className="text-center py-5">
         <Spinner animation="border" />
@@ -29,49 +79,72 @@ const Dashboard = () => {
     );
   }
 
+  // Counts
+  const trucksCount = isOwner ? trucks.length : stats?.totalTrucks ?? 0;
+  const tripsCount = trips.length;
+  const driversCount = isOwner || isAdmin ? stats?.totalDrivers ?? 0 : null;
+  const ongoingTripsCount = isDriver
+    ? trips.filter((t) => t.status === "ongoing").length
+    : stats?.ongoingTrips ?? 0;
+
   return (
     <Container fluid>
       <Row className="mb-4">
-        <Col md={3}>
-          <Card>
+        {isDriver ? (
+          <Col>
+            <Card className="mb-3 text-center">
+              <Card.Body>
+                <h4>Total Assigned Trips</h4>
+                <h2>{tripsCount}</h2>
+              </Card.Body>
+            </Card>
+          </Col>
+        ) : (
+          <Col>
+            <Card className="mb-3 text-center">
+              <Card.Body>
+                <h4>Total Trips</h4>
+                <h2>{stats?.totalTrips ?? 0}</h2>
+              </Card.Body>
+            </Card>
+          </Col>
+        )}
+        <Col>
+          <Card className="mb-3 text-center">
             <Card.Body>
-              <Card.Title>Total Trips</Card.Title>
-              <h3>{stats?.totalTrips}</h3>
+              <h4>Total Trucks</h4>
+              <h2>{trucksCount}</h2>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={3}>
-          <Card>
+        {(isOwner || isAdmin) && (
+          <Col>
+            <Card className="mb-3 text-center">
+              <Card.Body>
+                <h4>Total Drivers</h4>
+                <h2>{driversCount}</h2>
+              </Card.Body>
+            </Card>
+          </Col>
+        )}
+        <Col>
+          <Card className="mb-3 text-center">
             <Card.Body>
-              <Card.Title>Total Trucks</Card.Title>
-              <h3>{stats?.totalTrucks}</h3>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Total Drivers</Card.Title>
-              <h3>{stats?.totalDrivers}</h3>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          <Card>
-            <Card.Body>
-              <Card.Title>Ongoing Trips</Card.Title>
-              <h3>{stats?.ongoingTrips}</h3>
+              <h4>Ongoing Trips</h4>
+              <h2>{ongoingTripsCount}</h2>
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
       <Row>
-        <Col md={6}>
+        <Col>
           <Card>
-            <Card.Header>Recent Trips</Card.Header>
+            <Card.Header>
+              <strong>Recent Trips</strong>
+            </Card.Header>
             <Card.Body>
-              <Table responsive hover size="sm">
+              <Table striped responsive>
                 <thead>
                   <tr>
                     <th>Origin</th>
@@ -81,26 +154,38 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentTrips.map((trip) => (
-                    <tr key={trip._id}>
-                      <td>{trip.start_city}</td>
-                      <td>{trip.end_city}</td>
-                      <td>
-                        <Badge
-                          bg={
-                            trip.status === "ongoing"
-                              ? "primary"
-                              : trip.status === "completed"
-                              ? "success"
-                              : "secondary"
-                          }
-                        >
-                          {trip.status}
-                        </Badge>
+                  {(isDriver ? trips : recentTrips).length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="text-center text-muted">
+                        No trips found.
                       </td>
-                      <td>{moment(trip.startDate).format("MMM DD, YYYY")}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    (isDriver ? trips : recentTrips).slice(0, 5).map((trip) => (
+                      <tr key={trip._id}>
+                        <td>{trip.start_city}</td>
+                        <td>{trip.end_city}</td>
+                        <td>
+                          <Badge
+                            bg={
+                              trip.status === "scheduled"
+                                ? "secondary"
+                                : trip.status === "ongoing"
+                                ? "primary"
+                                : trip.status === "completed"
+                                ? "success"
+                                : "danger"
+                            }
+                          >
+                            {trip.status}
+                          </Badge>
+                        </td>
+                        <td>
+                          {moment(trip.start_time).format("MMM DD, YYYY")}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </Table>
             </Card.Body>
@@ -115,29 +200,39 @@ const Dashboard = () => {
                 <thead>
                   <tr>
                     <th>Trip</th>
-                    <th>Driver</th>
                     <th>Start</th>
                     <th>End</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentSessions.map((session) => (
-                    <tr key={session._id}>
-                      <td>
-                        {session.trip_id?.start_city} →{" "}
-                        {session.trip_id?.end_city}
-                      </td>
-                      <td>{session.driver_id?.name}</td>
-                      <td>
-                        {moment(session.startTime).format("MMM DD, YYYY HH:mm")}
-                      </td>
-                      <td>
-                        {session.endTime
-                          ? moment(session.endTime).format("MMM DD, YYYY HH:mm")
-                          : "Ongoing"}
+                  {recentSessions.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="text-center text-muted">
+                        No drive sessions found.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    recentSessions.slice(0, 5).map((session) => (
+                      <tr key={session._id}>
+                        <td>
+                          {session.trip_id?.start_city} →{" "}
+                          {session.trip_id?.end_city}
+                        </td>
+                        <td>
+                          {moment(session.start_time).format(
+                            "MMM DD, YYYY HH:mm"
+                          )}
+                        </td>
+                        <td>
+                          {session.end_time
+                            ? moment(session.end_time).format(
+                                "MMM DD, YYYY HH:mm"
+                              )
+                            : "Ongoing"}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </Table>
             </Card.Body>

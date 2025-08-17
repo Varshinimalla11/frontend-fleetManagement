@@ -4,6 +4,7 @@ export const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardStats: builder.query({
       query: () => "/dashboard/stats",
+      pollingInterval:30000
     }),
     getRecentTrips: builder.query({
       query: () => "/dashboard/recent-trips",

@@ -11,8 +11,11 @@ import moment from "moment";
 
 const RefuelEventList = () => {
   const { tripId } = useParams();
-  const { data: refuels = [], isLoading } =
-    useGetRefuelEventsByTripQuery(tripId);
+  const {
+    data: refuels = [],
+    isLoading,
+    refetch,
+  } = useGetRefuelEventsByTripQuery(tripId);
   const [createRefuelEvent] = useCreateRefuelEventMutation();
   const [deleteRefuelEvent] = useDeleteRefuelEventMutation();
 
@@ -43,6 +46,7 @@ const RefuelEventList = () => {
         fuel_after: "",
         payment_mode: "",
       });
+      refetch();
     } catch (err) {
       toast.error(err.data?.message || "Error adding refuel event");
     }
@@ -52,6 +56,7 @@ const RefuelEventList = () => {
     try {
       await deleteRefuelEvent(eventToDelete._id).unwrap();
       toast.success("Refuel event deleted successfully");
+      refetch();
     } catch (err) {
       toast.error(err.data?.message || "Error deleting refuel event");
     } finally {

@@ -1,274 +1,387 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useGetTripByIdQuery } from "./tripsApi";
-import { useGetDriveSessionsByTripQuery } from "../driveSessions/driveSessionsApi";
-import { useGetRefuelEventsByTripQuery } from "../refuelEvents/refuelEventsApi";
+import React, { useMemo } from "react";
+import { useParams } from "react-router-dom";
+import moment from "moment";
+import {
+  useGetTripByIdQuery,
+  useStartTripMutation,
+  useCompleteTripMutation,
+} from "../../api/tripsApi";
+import {
+  useGetSessionsByTripQuery,
+  useEndDriveSessionAndStartRestMutation,
+} from "../../api/driveSessionsApi";
+import {
+  useGetRestLogsByTripQuery,
+  useEndRestAndStartDriveMutation,
+} from "../../api/restLogsApi";
+import {
+  useGetRefuelLogsByTripQuery,
+  useLogRefuelEventMutation,
+} from "../../api/refuelEventsApi";
+import { useGetNotificationsQuery } from "../../api/notificationsApi";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   Container,
   Row,
   Col,
   Card,
-  Badge,
-  Button,
   Table,
+  Button,
+  Badge,
+  ListGroup,
 } from "react-bootstrap";
-import moment from "moment";
-import { toast } from "react-toastify";
 
-const TripDetails = () => {
+export default function TripDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const {
-    data: trip,
-    isLoading: tripLoading,
-    isError: tripError,
-  } = useGetTripByIdQuery(id);
-  const { data: driveSessions = [] } = useGetDriveSessionsByTripQuery(id);
-  const { data: refuelEvents = [] } = useGetRefuelEventsByTripQuery(id);
+  const { data: trip, refetch } = useGetTripByIdQuery(id);
+  const { data: sessions = [], refetch: refetchSessions } =
+    useGetSessionsByTripQuery(id);
+  const { data: restLogs = [], refetch: refetchRestLogs } =
+    useGetRestLogsByTripQuery(id);
+  const { data: refuels = [], refetch: refetchRefuels } =
+    useGetRefuelLogsByTripQuery(id);
+  const { data: notifications = [], refetch: refetchNotifications } =
+    useGetNotificationsQuery();
 
-  if (tripLoading) {
-    return (
-      <Container
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "400px" }}
-      >
-        <div className="spinner-border" role="status"></div>
-      </Container>
-    );
-  }
+  const [startTrip] = useStartTripMutation();
+  const [completeTrip] = useCompleteTripMutation();
+  const [endSession] = useEndDriveSessionAndStartRestMutation();
+  const [endRest] = useEndRestAndStartDriveMutation();
+  const [logRefuel] = useLogRefuelEventMutation();
 
-  if (tripError || !trip) {
-    toast.error("Error loading trip details");
-    return (
-      <Container className="py-5 text-center">
-        <h4>Trip not found</h4>
-        <Button as={Link} to="/trips" variant="primary">
-          Back to Trips
-        </Button>
-      </Container>
-    );
-  }
+  const isDriver = user?.role === "driver" && user._id === trip?.driver_id?._id;
+
+  const tripNotifications = useMemo(
+    () => notifications.filter((n) => n.trip_id === trip?._id),
+    [notifications, trip]
+  );
+
+  // Merge and sort timeline events
+  const timelineEvents = useMemo(() => {
+    const events = [];
+    sessions.forEach((s) => {
+      events.push({
+        type: "DriveSessionStart",
+        label: "Drive Start",
+        id: s._id + "_start",
+        time: new Date(s.start_time),
+        data: s,
+      });
+      if (s.end_time) {
+        events.push({
+          type: "DriveSessionEnd",
+          label: "Drive End",
+          id: s._id + "_end",
+          time: new Date(s.end_time),
+          data: s,
+        });
+      }
+    });
+    restLogs.forEach((r) => {
+      events.push({
+        type: "RestStart",
+        label: "Rest Start",
+        id: r._id + "_start",
+        time: new Date(r.rest_start_time),
+        data: r,
+      });
+      if (r.rest_end_time) {
+        events.push({
+          type: "RestEnd",
+          label: "Rest End",
+          id: r._id + "_end",
+          time: new Date(r.rest_end_time),
+          data: r,
+        });
+      }
+    });
+    refuels.forEach((r) => {
+      events.push({
+        type: "Refuel",
+        label: "Refuel",
+        id: r._id,
+        time: new Date(r.event_time),
+        data: r,
+      });
+    });
+    return events.sort((a, b) => a.time - b.time);
+  }, [sessions, restLogs, refuels]);
+
+  // Handlers
+  const handleStartTrip = async () => {
+    await startTrip(id);
+    refetch();
+    refetchSessions();
+  };
+  const handleCompleteTrip = async () => {
+    const fuelLeft = prompt("Enter remaining fuel before completing trip:");
+    if (!fuelLeft) return;
+    await completeTrip({ id, fuel_left: Number(fuelLeft) });
+    refetch();
+    refetchSessions();
+    refetchRestLogs();
+    refetchRefuels();
+  };
+  const handleEndDriveSession = async (sessionId) => {
+    const fuelLeft = prompt("Enter remaining fuel at end of drive session:");
+    if (!fuelLeft) return;
+    await endSession({ session_id: sessionId, fuel_left: Number(fuelLeft) });
+    refetchSessions();
+    refetchRestLogs();
+    refetch();
+  };
+  const handleEndRest = async (restId) => {
+    const fuelEnd = prompt("Enter fuel left at end of rest:");
+    if (!fuelEnd) return;
+    await endRest({ rest_id: restId, fuel_at_rest_end: Number(fuelEnd) });
+    refetchRestLogs();
+    refetchSessions();
+    refetch();
+  };
+  const handleLogRefuel = async () => {
+    const fuelBefore = prompt("Fuel before refuel (liters):");
+    const fuelAdded = prompt("Fuel added (liters):");
+    const payment_mode = prompt("Payment mode (cash/card/upi):", "cash");
+    if (!fuelBefore || !fuelAdded) return;
+    await logRefuel({
+      trip_id: trip._id,
+      event_time: new Date().toISOString(),
+      fuel_before: Number(fuelBefore),
+      fuel_added: Number(fuelAdded),
+      payment_mode,
+    });
+    refetch();
+    refetchRefuels();
+  };
+
+  if (!trip)
+    return <div className="text-center py-5">Loading trip data...</div>;
 
   return (
     <Container>
       <Row className="mb-4">
-        <Col>
-          <div className="d-flex justify-content-between align-items-center">
-            <h1>Trip Details</h1>
-            <Button variant="secondary" onClick={() => navigate("/trips")}>
-              <i className="fas fa-arrow-left me-2"></i> Back to Trips
-            </Button>
-          </div>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={8}>
-          {/* Trip Information */}
-          <Card className="mb-4">
+        <Col md={7}>
+          <Card>
             <Card.Header>
-              <h5>Trip Information</h5>
+              <h4>
+                <Badge bg="secondary" className="me-2">
+                  Trip
+                </Badge>
+                {trip.start_city} <strong>→</strong> {trip.end_city}
+              </h4>
             </Card.Header>
             <Card.Body>
-              <Row>
-                <Col md={6}>
-                  <p>
-                    <strong>Origin:</strong> {trip.start_city}
-                  </p>
-                  <p>
-                    <strong>Destination:</strong> {trip.end_city}
-                  </p>
-                  <p>
-                    <strong>Status:</strong> {trip.status}
-                  </p>
+              <Row className="mb-2">
+                <Col>
+                  <span>Status: </span>
+                  <Badge
+                    bg={
+                      trip.status === "scheduled"
+                        ? "info"
+                        : trip.status === "ongoing"
+                        ? "primary"
+                        : trip.status === "completed"
+                        ? "success"
+                        : "danger"
+                    }
+                  >
+                    {trip.status}
+                  </Badge>
                 </Col>
-                <Col md={6}>
-                  <p>
-                    <strong>Start Date:</strong>{" "}
-                    {moment(trip.start_date).format("MMM DD, YYYY HH:mm")}
-                  </p>
-                  {trip.end_date && (
-                    <p>
-                      <strong>End Date:</strong>{" "}
-                      {moment(trip.end_date).format("MMM DD, YYYY HH:mm")}
-                    </p>
+                <Col>
+                  Created: {moment(trip.createdAt).format("MMM DD YYYY, HH:mm")}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div>
+                    <strong>Total KM planned:</strong> {trip.total_km}
+                  </div>
+                  <div>
+                    <strong>KM Remaining:</strong> {trip.remaining_km_in_trip}
+                  </div>
+                  <div>
+                    <strong>Fuel Start:</strong> {trip.fuel_start}L
+                  </div>
+                  <div>
+                    <strong>Fuel End:</strong> {trip.fuel_end ?? "-"}
+                  </div>
+                </Col>
+                <Col>
+                  <div>
+                    <strong>Cargo Weight:</strong> {trip.cargo_weight}kg
+                  </div>
+                  {trip.truck_id && (
+                    <div>
+                      <strong>Truck:</strong> {trip.truck_id.plate_number}
+                    </div>
                   )}
                 </Col>
               </Row>
             </Card.Body>
           </Card>
-
-          {/* Drive Sessions */}
-          <Card className="mb-4">
-            <Card.Header>
-              <h5>Drive Sessions</h5>
-            </Card.Header>
-            <Card.Body>
-              {driveSessions.length > 0 ? (
-                <Table responsive size="sm">
-                  <thead>
-                    <tr>
-                      <th>Start Time</th>
-                      <th>End Time</th>
-                      <th>Duration</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {driveSessions.map((session) => (
-                      <tr key={session._id}>
-                        <td>
-                          {moment(session.startTime).format("MMM DD, HH:mm")}
-                        </td>
-                        <td>
-                          {session.endTime
-                            ? moment(session.endTime).format("MMM DD, HH:mm")
-                            : "Ongoing"}
-                        </td>
-                        <td>
-                          {session.endTime
-                            ? moment
-                                .duration(
-                                  moment(session.endTime).diff(
-                                    moment(session.startTime)
-                                  )
-                                )
-                                .humanize()
-                            : "Ongoing"}
-                        </td>
-                        <td>
-                          <Badge
-                            bg={
-                              session.status === "active"
-                                ? "success"
-                                : "secondary"
-                            }
-                          >
-                            {session.status}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              ) : (
-                <p className="text-muted">
-                  No drive sessions recorded for this trip.
-                </p>
-              )}
-            </Card.Body>
-          </Card>
-
-          {/* Refuel Events */}
-          <Card>
-            <Card.Header>
-              <h5>Refuel Events</h5>
-            </Card.Header>
-            <Card.Body>
-              {refuelEvents.length > 0 ? (
-                <Table responsive size="sm">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Location</th>
-                      <th>Amount</th>
-                      <th>Cost</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {refuelEvents.map((event) => (
-                      <tr key={event._id}>
-                        <td>{moment(event.date).format("MMM DD, YYYY")}</td>
-                        <td>{event.location}</td>
-                        <td>{event.fuelAmount} L</td>
-                        <td>${event.cost}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              ) : (
-                <p className="text-muted">
-                  No refuel events recorded for this trip.
-                </p>
-              )}
-            </Card.Body>
-          </Card>
         </Col>
-
-        {/* Right Sidebar */}
-        <Col md={4}>
-          {/* Assigned Resources */}
-          <Card className="mb-4">
-            <Card.Header>
-              <h5>Assigned Resources</h5>
-            </Card.Header>
-            <Card.Body>
-              <div className="mb-3">
-                <strong>Truck:</strong>
-                {trip.truck_id ? (
-                  <div>
-                    <p>{trip.truck_id.plate_number}</p>
-                    <p>
-                      <strong>Condition:</strong>{" "}
-                      {trip.truck_id.condition || "N/A"}
-                    </p>
-                    <p>
-                      <strong>Mileage:</strong>{" "}
-                      {trip.truck_id.mileage_factor || "N/A"}
-                    </p>
-                  </div>
-                ) : (
-                  <p>No truck assigned</p>
-                )}
-              </div>
-              <div>
-                <strong>Driver:</strong>
-                {trip.driver_id ? (
-                  <div>
-                    <p>
-                      <strong>Name:</strong> {trip.driver_id.name}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {trip.driver_id.email}
-                    </p>
-                    <p>
-                      <strong>Phone:</strong> {trip.driver_id.phone}
-                    </p>
-                  </div>
-                ) : (
-                  <p>No driver assigned</p>
-                )}
-              </div>
-            </Card.Body>
-          </Card>
-
-          {/* Trip Statistics */}
+        <Col md={5}>
           <Card>
             <Card.Header>
-              <h5>Trip Statistics</h5>
+              <h5>
+                <Badge bg="warning" text="dark">
+                  Driver
+                </Badge>
+              </h5>
             </Card.Header>
             <Card.Body>
-              <div>
-                <strong>Total Drive Sessions:</strong> {driveSessions.length}
-              </div>
-              <div>
-                <strong>Total Refuel Events:</strong> {refuelEvents.length}
-              </div>
-              <div>
-                <strong>Total Fuel Cost:</strong> $
-                {refuelEvents.reduce((t, e) => t + e.cost, 0).toFixed(2)}
-              </div>
-              <div>
-                <strong>Total Fuel Amount:</strong>{" "}
-                {refuelEvents.reduce((t, e) => t + e.fuelAmount, 0).toFixed(1)}{" "}
-                L
-              </div>
+              {trip.driver_id ? (
+                <>
+                  <div>
+                    <strong>Name:</strong> {trip.driver_id.name}
+                  </div>
+                  <div>
+                    <strong>Phone:</strong> {trip.driver_id.phone}
+                  </div>
+                  <div>
+                    <strong>Aadhaar:</strong>{" "}
+                    {trip.driver_id.aadhar_number ?? "-"}
+                  </div>
+                  <div>
+                    <strong>License:</strong>{" "}
+                    {trip.driver_id.license_number ?? "-"}
+                  </div>
+                </>
+              ) : (
+                <div className="text-muted">No driver assigned</div>
+              )}
             </Card.Body>
           </Card>
         </Col>
       </Row>
+
+      {/* Timeline */}
+      <Card className="mb-4">
+        <Card.Header>
+          <h5>Trip Timeline</h5>
+        </Card.Header>
+        <Card.Body>
+          {timelineEvents.length === 0 ? (
+            <div className="text-muted">No events yet.</div>
+          ) : (
+            <Table size="sm" striped bordered responsive>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Event</th>
+                  <th>Details</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {timelineEvents.map((ev) => {
+                  let actionButton = null;
+                  let detailText = "";
+
+                  // Show buttons only if logged-in user is assigned driver & trip ongoing
+                  if (isDriver && trip.status === "ongoing") {
+                    if (ev.type === "DriveSessionStart" && !ev.data.end_time) {
+                      actionButton = (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => handleEndDriveSession(ev.data._id)}
+                        >
+                          End Drive Session
+                        </Button>
+                      );
+                    }
+                    if (ev.type === "RestStart" && !ev.data.rest_end_time) {
+                      actionButton = (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleEndRest(ev.data._id)}
+                        >
+                          End Rest & Resume Drive
+                        </Button>
+                      );
+                    }
+                  }
+
+                  switch (ev.type) {
+                    case "DriveSessionStart":
+                      detailText = `Drive session started. Fuel used in session: ${
+                        ev.data.fuel_used ?? "N/A"
+                      }L`;
+                      break;
+                    case "DriveSessionEnd":
+                      detailText = `Drive session ended. Fuel used: ${
+                        ev.data.fuel_used ?? "N/A"
+                      }L`;
+                      break;
+                    case "RestStart":
+                      detailText = `Rest started. Fuel at start of rest: ${
+                        ev.data.fuel_at_rest_start ?? "N/A"
+                      }L`;
+                      break;
+                    case "RestEnd":
+                      detailText = `Rest ended. Fuel at end of rest: ${
+                        ev.data.fuel_at_rest_end ?? "N/A"
+                      }L`;
+                      break;
+                    case "Refuel":
+                      detailText = `Fuel before: ${ev.data.fuel_before}L, Added: ${ev.data.fuel_added}L, After: ${ev.data.fuel_after}L. Payment: ${ev.data.payment_mode}`;
+                      break;
+                    default:
+                      detailText = "";
+                  }
+
+                  return (
+                    <tr key={ev.id}>
+                      <td>{moment(ev.time).format("MMM DD YYYY, HH:mm")}</td>
+                      <td>{ev.label}</td>
+                      <td>{detailText}</td>
+                      <td>{actionButton}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          )}
+        </Card.Body>
+      </Card>
+
+      {/* Driver Action Buttons */}
+      <Row>
+        <Col>
+          {isDriver && (
+            <>
+              {trip.status === "scheduled" && (
+                <Button
+                  variant="success"
+                  onClick={handleStartTrip}
+                  className="me-2"
+                >
+                  Start Trip
+                </Button>
+              )}
+              {trip.status === "ongoing" && (
+                <>
+                  <Button
+                    variant="warning"
+                    onClick={handleCompleteTrip}
+                    className="me-2"
+                  >
+                    Complete Trip
+                  </Button>
+                  <Button variant="info" onClick={handleLogRefuel}>
+                    Log Refuel
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </Col>
+      </Row>
     </Container>
   );
-};
-
-export default TripDetails;
+}
