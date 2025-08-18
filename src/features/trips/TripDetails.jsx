@@ -28,20 +28,25 @@ import {
   Table,
   Button,
   Badge,
-  ListGroup,
 } from "react-bootstrap";
 
 export default function TripDetails() {
   const { id } = useParams();
   const { user } = useAuth();
 
-  const { data: trip, refetch } = useGetTripByIdQuery(id);
+  const { data: trip, refetch: refetchTrip } = useGetTripByIdQuery(id, {
+    pollingInterval: 6000,
+  });
+
   const { data: sessions = [], refetch: refetchSessions } =
-    useGetSessionsByTripQuery(id);
+    useGetSessionsByTripQuery(id, { pollingInterval: 6000 });
+
   const { data: restLogs = [], refetch: refetchRestLogs } =
-    useGetRestLogsByTripQuery(id);
+    useGetRestLogsByTripQuery(id, { pollingInterval: 6000 });
+
   const { data: refuels = [], refetch: refetchRefuels } =
-    useGetRefuelLogsByTripQuery(id);
+    useGetRefuelLogsByTripQuery(id, { pollingInterval: 6000 });
+
   const { data: notifications = [], refetch: refetchNotifications } =
     useGetNotificationsQuery();
 
@@ -112,14 +117,17 @@ export default function TripDetails() {
   // Handlers
   const handleStartTrip = async () => {
     await startTrip(id);
-    refetch();
+    refetchTrip();
     refetchSessions();
+    refetchRestLogs();
+    refetchRefuels();
+    refetchNotifications();
   };
   const handleCompleteTrip = async () => {
     const fuelLeft = prompt("Enter remaining fuel before completing trip:");
     if (!fuelLeft) return;
     await completeTrip({ id, fuel_left: Number(fuelLeft) });
-    refetch();
+    refetchTrip();
     refetchSessions();
     refetchRestLogs();
     refetchRefuels();
@@ -130,7 +138,7 @@ export default function TripDetails() {
     await endSession({ session_id: sessionId, fuel_left: Number(fuelLeft) });
     refetchSessions();
     refetchRestLogs();
-    refetch();
+    refetchTrip();
   };
   const handleEndRest = async (restId) => {
     const fuelEnd = prompt("Enter fuel left at end of rest:");
@@ -138,7 +146,7 @@ export default function TripDetails() {
     await endRest({ rest_id: restId, fuel_at_rest_end: Number(fuelEnd) });
     refetchRestLogs();
     refetchSessions();
-    refetch();
+    refetchTrip();
   };
   const handleLogRefuel = async () => {
     const fuelBefore = prompt("Fuel before refuel (liters):");
@@ -152,7 +160,7 @@ export default function TripDetails() {
       fuel_added: Number(fuelAdded),
       payment_mode,
     });
-    refetch();
+    refetchTrip();
     refetchRefuels();
   };
 

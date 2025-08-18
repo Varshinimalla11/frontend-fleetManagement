@@ -15,6 +15,7 @@ export const inviteTokensApi = baseApi.injectEndpoints({
         method: "POST",
         body: inviteData,
       }),
+      invalidatesTags: ["DashboardStats"],
     }),
   }),
   overrideExisting: false,

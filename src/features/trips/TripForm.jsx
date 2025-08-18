@@ -83,6 +83,16 @@ const TripForm = () => {
       return;
     }
 
+    if (
+      formData.origin.trim().toLowerCase() ===
+      formData.destination.trim().toLowerCase()
+    ) {
+      const errorMessage = "Origin and Destination cannot be the same";
+      setError(errorMessage);
+      toast.error(errorMessage); // show toast error
+      return; // stop form submission
+    }
+
     try {
       const selectedDriver = drivers.find((d) => d._id === formData.driver);
 

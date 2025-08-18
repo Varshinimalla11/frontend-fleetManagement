@@ -10,56 +10,50 @@ import { disconnectSocket } from "../utils/socket";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token") || null
+  ); // lazy init
   const [user, setUser] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+
   const {
     data: currentUser,
     isLoading: isFetchingUser,
     refetch,
   } = useGetCurrentUserQuery(undefined, {
-    skip: !token,
+    skip: !token, // only skip if no token
   });
-
-  const [registerApi, { isLoading: isRegistering }] = useRegisterMutation();
-  const [loginApi, { isLoading: isLoggingIn }] = useLoginMutation();
 
   useEffect(() => {
     if (currentUser) {
       setUser(currentUser);
-    }  else {
+      setIsInitializing(false);
+    } else if (!isFetchingUser && token) {
+      // If token exists but no user, treat as not authenticated
       setUser(null);
+      setIsInitializing(false);
     }
-  }, [currentUser]);
+  }, [currentUser, isFetchingUser, token]);
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      if (token) {
-        localStorage.setItem("token", token);
-        try {
-          await refetch().unwrap();
-        } catch (error) {
-          console.error("Error fetching user:", error);
-          logout();
-        }
-      } else {
-        localStorage.removeItem("token");
-        setUser(null);
-      }
+    if (!token) {
+      localStorage.removeItem("token");
+      setUser(null);
       setIsInitializing(false);
-    };
+    }
+  }, [token]);
 
-    initializeAuth();
-  }, [token, refetch]);
+  const [registerApi, { isLoading: isRegistering }] = useRegisterMutation();
+  const [loginApi, { isLoading: isLoggingIn }] = useLoginMutation();
 
   const login = async (credentials) => {
     try {
       setIsLoading(true);
       const res = await loginApi(credentials).unwrap();
-        localStorage.setItem("token", res.token); 
+      localStorage.setItem("token", res.token);
       setToken(res.token);
-        if (res.user) setUser(res.user);
+      if (res.user) setUser(res.user);
       return res;
     } catch (error) {
       console.error("Login error:", error);
@@ -86,7 +80,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     localStorage.removeItem("token");
-      setUser(null);
+    setUser(null);
     disconnectSocket();
   };
 
@@ -95,6 +89,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         token,
+        isAuthenticated: !!user,
         isInitializing,
         isLoading: isLoading || isFetchingUser || isLoggingIn || isRegistering,
         login,

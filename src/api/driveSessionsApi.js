@@ -5,6 +5,7 @@ export const driveSessionsApi = baseApi.injectEndpoints({
     // 1️⃣ Get all drive sessions for a specific trip
     getSessionsByTrip: builder.query({
       query: (tripId) => `/drive-sessions/trip/${tripId}`,
+      providesTags: ["DriveSessions"],
     }),
 
     // 2️⃣ End a drive session and start rest
@@ -14,6 +15,7 @@ export const driveSessionsApi = baseApi.injectEndpoints({
         method: "PUT", // backend expects PUT here
         body: { fuel_left },
       }),
+      invalidatesTags: ["Trips", "DriveSessions", "DashboardStats"],
     }),
   }),
   overrideExisting: false,

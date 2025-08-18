@@ -11,6 +11,7 @@ export const refuelEventsApi = baseApi.injectEndpoints({
         method: "POST",
         body: eventData,
       }),
+      invalidatesTags: ["Trips", "RefuelEvents", "DashboardStats"],
     }),
   }),
   overrideExisting: false,

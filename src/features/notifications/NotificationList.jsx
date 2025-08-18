@@ -15,7 +15,7 @@ const NotificationsList = () => {
     isLoading,
     refetch,
   } = useGetNotificationsQuery(undefined, {
-    pollingInterval: 30000, // auto refresh every 30 seconds
+    pollingInterval: 6000, // auto refresh every 30 seconds
   });
   const [markAsRead] = useMarkNotificationAsReadMutation();
   const [markAllRead] = useMarkAllNotificationsAsReadMutation();

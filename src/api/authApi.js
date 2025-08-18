@@ -15,6 +15,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: user,
       }),
+      invalidatesTags: ["DashboardStats"],
     }),
     getCurrentUser: builder.query({
       query: () => "/auth/me",
@@ -26,6 +27,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["DashboardStats"],
     }),
     getDrivers: builder.query({
       query: () => "/auth/my-drivers", // GET /api/drivers

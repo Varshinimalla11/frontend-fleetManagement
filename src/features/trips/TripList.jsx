@@ -15,8 +15,8 @@ import {
   Modal,
   Spinner,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/AuthContext";
 import moment from "moment";
@@ -31,11 +31,16 @@ const TripList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [tripToDelete, setTripToDelete] = useState(null);
   const { refetch } = useGetDashboardStatsQuery(undefined, { skip: false });
+  const location = useLocation();
 
   // Always call both hooks (React Hooks must not be conditional!)
   const tripsResult = useGetTripsQuery({ showDeleted });
   const myTripsResult = useGetMyTripsQuery();
   const isDriver = user?.role === "driver";
+
+  useEffect(() => {
+    myTripsResult.refetch();
+  }, [location, myTripsResult.refetch]);
 
   // Driver sees only their trips; others see trips according to showDeleted toggle
   const trips = isDriver ? myTripsResult.data || [] : tripsResult.data || [];

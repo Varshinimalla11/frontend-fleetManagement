@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   Row,
@@ -36,11 +36,13 @@ const Dashboard = () => {
   const { data: driverTrips = [], isLoading: loadingDriverTrips } =
     useGetMyTripsQuery(undefined, {
       skip: !isDriver,
+      pollingInterval: 6000,
     });
   const { data: allTrips = [], isLoading: loadingAllTrips } = useGetTripsQuery(
     undefined,
     {
       skip: isDriver,
+      pollingInterval: 6000,
     }
   );
 
@@ -53,6 +55,7 @@ const Dashboard = () => {
     undefined,
     {
       skip: isDriver,
+      pollingInterval: 6000,
     }
   );
 
@@ -60,10 +63,11 @@ const Dashboard = () => {
   const { data: recentTrips = [], isLoading: loadingRecentTrips } =
     useGetRecentTripsQuery(undefined, {
       skip: isDriver,
+      pollingInterval: 6000,
     });
 
   const { data: recentSessions = [], isLoading: loadingRecentSessions } =
-    useGetRecentDriveSessionsQuery();
+    useGetRecentDriveSessionsQuery(undefined, { pollingInterval: 6000 });
 
   if (
     loadingTrucks ||
@@ -89,9 +93,9 @@ const Dashboard = () => {
 
   return (
     <Container fluid>
-      <Row className="mb-4">
+      <Row className="mb-4 dashboard-stats">
         {isDriver ? (
-          <Col>
+          <Col md={6}>
             <Card className="mb-3 text-center">
               <Card.Body>
                 <h4>Total Assigned Trips</h4>
