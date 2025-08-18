@@ -54,6 +54,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", res.token);
       setToken(res.token);
       if (res.user) setUser(res.user);
+      // Refetch current user to ensure latest details
+      await refetch();
       return res;
     } catch (error) {
       console.error("Login error:", error);
@@ -83,13 +85,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     disconnectSocket();
   };
-
+const isAuthenticated = !!token && !!user;
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
-        isAuthenticated: !!user,
+        isAuthenticated,
         isInitializing,
         isLoading: isLoading || isFetchingUser || isLoggingIn || isRegistering,
         login,

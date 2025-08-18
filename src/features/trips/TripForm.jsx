@@ -133,9 +133,20 @@ const TripForm = () => {
 
   if (loadingTrucks || loadingDrivers || (isEdit && loadingTrip)) {
     return (
-      <Container className="py-5 text-center">
-        <Spinner animation="border" role="status" />
-      </Container>
+      <div
+        style={{
+          backgroundColor: "#9faaf4",
+          minHeight: "100vh",
+          width: "100vw",
+          padding: 0,
+          margin: 0,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner animation="border" />
+      </div>
     );
   }
 
@@ -152,223 +163,239 @@ const TripForm = () => {
   // }
 
   return (
-    <Container>
-      <Row className="justify-content-center">
-        <Col md={8} lg={6}>
-          <Card>
-            <Card.Header>
-              <h3>{isEdit ? "Edit Trip" : "Create New Trip"}</h3>
-            </Card.Header>
-            <Card.Body>
-              {error && <Alert variant="danger">{error}</Alert>}
+    <div
+      style={{
+        backgroundColor: "#9faaf4",
+        minHeight: "100vh",
+        width: "100%",
+        padding: 0,
+        margin: 0,
+        display: "flex",
+        justifyContent: "center",
+        paddingTop: "2rem",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "600px",
+          background: "#fff",
+          borderRadius: 16,
+          boxShadow: "0 2px 16px #0002",
+          padding: "2rem",
+          boxSizing: "border-box",
+          margin: "0 auto",
+          paddingLeft: "1rem",
+          paddingRight: "1rem",
+        }}
+      >
+        <h2 className="mb-4 text-center">
+          {isEdit ? "Edit Trip" : "Create New Trip"}
+        </h2>
+        {error && <Alert variant="danger">{error}</Alert>}
 
-              <Form onSubmit={handleSubmit}>
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Origin *</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="origin"
-                        value={formData.origin}
-                        onChange={handleChange}
-                        required
-                        placeholder="Starting location"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Destination *</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="destination"
-                        value={formData.destination}
-                        onChange={handleChange}
-                        required
-                        placeholder="Destination location"
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+        <Form onSubmit={handleSubmit}>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Origin *</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="origin"
+                  value={formData.origin}
+                  onChange={handleChange}
+                  required
+                  placeholder="Starting location"
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Destination *</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="destination"
+                  value={formData.destination}
+                  onChange={handleChange}
+                  required
+                  placeholder="Destination location"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Truck</Form.Label>
-                      <Form.Select
-                        name="truck"
-                        value={formData.truck}
-                        onChange={handleChange}
-                      >
-                        <option value="">Select a truck</option>
-                        {trucks
-                          .filter((truck) => truck.condition === "active")
-                          .map((truck) => (
-                            <option key={truck._id} value={truck._id}>
-                              {truck.plate_number} - {truck.condition}
-                            </option>
-                          ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Driver</Form.Label>
-                      <Form.Select
-                        name="driver"
-                        value={formData.driver}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select a driver</option>
-                        {drivers.map((driver) => (
-                          <option key={driver._id} value={driver._id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Truck</Form.Label>
+                <Form.Select
+                  name="truck"
+                  value={formData.truck}
+                  onChange={handleChange}
+                >
+                  <option value="">Select a truck</option>
+                  {trucks
+                    .filter((truck) => truck.condition === "active")
+                    .map((truck) => (
+                      <option key={truck._id} value={truck._id}>
+                        {truck.plate_number} - {truck.condition}
+                      </option>
+                    ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Driver *</Form.Label>
+                <Form.Select
+                  name="driver"
+                  value={formData.driver}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select a driver</option>
+                  {drivers.map((driver) => (
+                    <option key={driver._id} value={driver._id}>
+                      {driver.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
 
-                {selectedDriverDetails && (
-                  <div className="d-flex justify-content-center">
-                    <Card
-                      className="mb-3 p-3 bg-light text-center"
-                      style={{ maxWidth: "400px" }}
-                    >
-                      <h5>Driver Snapshot:</h5>
-                      <p>
-                        <strong>Name:</strong> {selectedDriverDetails.name}
-                      </p>
-                      <p>
-                        <strong>Phone:</strong> {selectedDriverDetails.phone}
-                      </p>
-                      <p>
-                        <strong>Aadhaar Number:</strong>{" "}
-                        {selectedDriverDetails.aadhar_number}
-                      </p>
-                      <p>
-                        <strong>License Number:</strong>{" "}
-                        {selectedDriverDetails.license_number}
-                      </p>
-                    </Card>
-                  </div>
-                )}
+          {selectedDriverDetails && (
+            <div className="d-flex justify-content-center">
+              <Card
+                className="mb-3 p-3 bg-light text-center"
+                style={{ maxWidth: "400px" }}
+              >
+                <h5>Driver Snapshot:</h5>
+                <p>
+                  <strong>Name:</strong> {selectedDriverDetails.name}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {selectedDriverDetails.phone}
+                </p>
+                <p>
+                  <strong>Aadhaar Number:</strong>{" "}
+                  {selectedDriverDetails.aadhar_number}
+                </p>
+                <p>
+                  <strong>License Number:</strong>{" "}
+                  {selectedDriverDetails.license_number}
+                </p>
+              </Card>
+            </div>
+          )}
 
-                <Row>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Start Date *</Form.Label>
-                      <Form.Control
-                        type="datetime-local"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>End Date</Form.Label>
-                      <Form.Control
-                        type="datetime-local"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={handleChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Start Date *</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>End Date</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-                <Row>
-                  <Col md={4}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Total KM *</Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="totalKm"
-                        value={formData.totalKm}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Cargo Weight (kg) *</Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="cargoWeight"
-                        value={formData.cargoWeight}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Fuel at Start (litres) *</Form.Label>
-                      <Form.Control
-                        type="number"
-                        name="fuelStart"
-                        value={formData.fuelStart}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+          <Row>
+            <Col md={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>Total KM *</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="totalKm"
+                  value={formData.totalKm}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>Cargo Weight (kg) *</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="cargoWeight"
+                  value={formData.cargoWeight}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3">
+                <Form.Label>Fuel at Start (litres) *</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="fuelStart"
+                  value={formData.fuelStart}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Status</Form.Label>
-                  <Form.Select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                  >
-                    <option value="scheduled">Scheduled</option>
-                    <option value="ongoing">Ongoing</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </Form.Select>
-                </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Status</Form.Label>
+            <Form.Select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="scheduled">Scheduled</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </Form.Select>
+          </Form.Group>
 
-                <div className="d-flex gap-2">
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    disabled={creating || updating}
-                  >
-                    {creating || updating ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                        />
-                        Saving...
-                      </>
-                    ) : isEdit ? (
-                      "Update Trip"
-                    ) : (
-                      "Create Trip"
-                    )}
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => navigate("/trips")}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+          <div className="d-flex gap-2">
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={creating || updating}
+            >
+              {creating || updating ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                  />
+                  Saving...
+                </>
+              ) : isEdit ? (
+                "Update Trip"
+              ) : (
+                "Create Trip"
+              )}
+            </Button>
+            <Button variant="secondary" onClick={() => navigate("/trips")}>
+              Cancel
+            </Button>
+          </div>
+        </Form>
+      </div>
+    </div>
   );
 };
 

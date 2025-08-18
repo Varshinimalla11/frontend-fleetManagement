@@ -66,7 +66,7 @@ const TruckForm = () => {
     <Container className="mt-4">
       <h1>{isEdit ? "Edit Truck" : "Add New Truck"}</h1>
       <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" controlId="formPlateNumber">
           <Form.Label>Plate Number</Form.Label>
           <Form.Control
             type="text"
@@ -75,6 +75,7 @@ const TruckForm = () => {
             onChange={handleChange}
             required
             placeholder="Enter plate number"
+            readOnly={isEdit}
           />
         </Form.Group>
         <Form.Group className="mb-3">

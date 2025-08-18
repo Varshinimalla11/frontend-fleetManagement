@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -30,7 +30,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       setLoading(true);
       await login(formData);
@@ -82,10 +81,14 @@ const Login = () => {
 
       {/* Right half: Login form */}
       <Col
-        xs={12}
         md={6}
-        className="d-flex align-items-center justify-content-center"
-        style={{ background: "#faf9ee", minHeight: "100vh" }}
+        style={{
+          backgroundColor: "#9faaf4ff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+        }}
       >
         <Card
           style={{

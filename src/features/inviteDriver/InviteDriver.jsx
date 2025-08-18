@@ -39,8 +39,33 @@ const InviteDriver = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
+    <div
+      style={{
+        backgroundColor: "#9faaf4",
+        minHeight: "100vh",
+        width: "100%",
+        padding: 0,
+        margin: 0,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        boxSizing: "border-box",
+        paddingTop: "2rem",
+        paddingBottom: "2rem",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 480,
+          background: "#fff",
+          borderRadius: 16,
+          boxShadow: "0 4px 24px rgba(0,0,0,0.12)",
+          padding: "2rem 3rem",
+          boxSizing: "border-box",
+          margin: "0 1rem",
+        }}
+      >
         <Col md={6}>
           <Card>
             <Card.Header>
@@ -85,8 +110,8 @@ const InviteDriver = () => {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 };
 

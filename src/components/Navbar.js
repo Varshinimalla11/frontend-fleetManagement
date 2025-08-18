@@ -105,9 +105,9 @@ const Navbar = () => {
                 <Nav.Link as={Link} to="/invite-driver">
                   <i className="fas fa-user-plus me-1"></i> Invite Driver
                 </Nav.Link>
-                <LinkContainer to="/my-drivers">
-                  <Nav.Link>My Drivers</Nav.Link>
-                </LinkContainer>
+                 <Nav.Link as={Link} to="/my-drivers">
+                  <i className="fas fa-user-plus me-1"></i> My Drivers
+                </Nav.Link>
               </>
             )}
 

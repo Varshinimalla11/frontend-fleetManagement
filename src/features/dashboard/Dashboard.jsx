@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Container,
   Row,
@@ -20,11 +20,12 @@ import moment from "moment";
 
 const Dashboard = () => {
   const { user } = useAuth();
+
   const isDriver = user?.role === "driver";
   const isOwner = user?.role === "owner";
   const isAdmin = user?.role === "admin";
 
-  // Hook for trucks - owners/admins fetch, drivers skip
+  // Call all hooks always, but use `skip` option so they only fetch if needed
   const { data: trucks = [], isLoading: loadingTrucks } = useGetTrucksQuery(
     undefined,
     {
@@ -32,12 +33,12 @@ const Dashboard = () => {
     }
   );
 
-  // Always call both trip hooks to obey hooks rules
   const { data: driverTrips = [], isLoading: loadingDriverTrips } =
     useGetMyTripsQuery(undefined, {
       skip: !isDriver,
       pollingInterval: 6000,
     });
+
   const { data: allTrips = [], isLoading: loadingAllTrips } = useGetTripsQuery(
     undefined,
     {
@@ -46,11 +47,6 @@ const Dashboard = () => {
     }
   );
 
-  // Choose trips depending on role
-  const trips = isDriver ? driverTrips : allTrips;
-  const loadingTrips = isDriver ? loadingDriverTrips : loadingAllTrips;
-
-  // Dashboard stats only for owner/admin
   const { data: stats, isLoading: loadingStats } = useGetDashboardStatsQuery(
     undefined,
     {
@@ -59,7 +55,6 @@ const Dashboard = () => {
     }
   );
 
-  // Recent trips for owner/admin (skip driver)
   const { data: recentTrips = [], isLoading: loadingRecentTrips } =
     useGetRecentTripsQuery(undefined, {
       skip: isDriver,
@@ -69,19 +64,19 @@ const Dashboard = () => {
   const { data: recentSessions = [], isLoading: loadingRecentSessions } =
     useGetRecentDriveSessionsQuery(undefined, { pollingInterval: 6000 });
 
-  if (
+  // Choose correct trips based on role (after hooks are always run)
+  const trips = isDriver ? driverTrips : allTrips;
+  const loadingTrips = isDriver ? loadingDriverTrips : loadingAllTrips;
+
+  // Loading states
+  const loadingUser = !user;
+  const loading =
+    loadingUser ||
     loadingTrucks ||
     loadingTrips ||
     (loadingStats && !isDriver) ||
     loadingRecentTrips ||
-    loadingRecentSessions
-  ) {
-    return (
-      <div className="text-center py-5">
-        <Spinner animation="border" />
-      </div>
-    );
-  }
+    loadingRecentSessions;
 
   // Counts
   const trucksCount = isOwner ? trucks.length : stats?.totalTrucks ?? 0;
@@ -90,6 +85,14 @@ const Dashboard = () => {
   const ongoingTripsCount = isDriver
     ? trips.filter((t) => t.status === "ongoing").length
     : stats?.ongoingTrips ?? 0;
+
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
   return (
     <Container fluid>

@@ -11,6 +11,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
+import loginImg from "../../assets/login.jpeg";
 
 const Register = () => {
   const { register } = useAuth();
@@ -64,14 +65,33 @@ const Register = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <Card>
-            <Card.Header>
-              <h3 className="mb-0">Register</h3>
-            </Card.Header>
+    <Container fluid>
+      <Row style={{ minHeight: "100vh" }}>
+        {/* Left Side: Image and Welcome Text */}
+        <Col
+          md={6}
+          className="d-none d-md-flex flex-column justify-content-center align-items-center"
+          style={{ background: `url(${loginImg}) center/cover no-repeat` }}
+        >
+          <h2 className="text-white mb-2">Welcome!</h2>
+          <p className="text-white">Create your account to get started.</p>
+        </Col>
+        {/* Right Side: Register Form */}
+        <Col
+          md={6}
+          className="d-flex align-items-center justify-content-center"
+          style={{ backgroundColor: "#8592e6" }}
+        >
+          <Card
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              backgroundColor: "white",
+            }}
+            className="p-4 shadow"
+          >
             <Card.Body>
+              <h3 className="mb-3 text-center">Register</h3>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formName">

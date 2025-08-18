@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -44,131 +43,172 @@ function App() {
     <Router>
       <NotificationProvider>
         <ToastContainer position="top-center" autoClose={2000} />
+
         <Routes>
-          {isAuthenticated ? (
-            <Route
-              path="/"
-              element={
+          {/* Public routes */}
+          <Route
+            path="/login"
+            element={
+              !isAuthenticated ? (
+                <Login />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              !isAuthenticated ? (
+                <Register />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+          <Route
+            path="/register-driver"
+            element={
+              !isAuthenticated ? (
+                <RegisterDriverFromInvite />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+
+          {/* Landing page accessible for everyone */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* Protected routes, guard with ProtectedRoute or Navigate */}
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
                 <ProtectedRoute roles={["owner", "admin", "driver"]}>
                   <Layout />
                 </ProtectedRoute>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          >
+            {/* Default route */}
+            <Route index element={<Navigate to="dashboard" replace />} />
+
+            {/* Dashboard */}
+            <Route path="dashboard" element={<Dashboard />} />
+
+            {/* Invite driver - owner/admin only */}
+            <Route
+              path="invite-driver"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <InviteDriver />
+                </ProtectedRoute>
               }
-            >
-              <Route index element={<Navigate to="dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
+            />
 
-              <Route
-                path="invite-driver"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <InviteDriver />
-                  </ProtectedRoute>
-                }
-              />
+            {/* My drivers - owner/admin only */}
+            <Route
+              path="my-drivers"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <MyDrivers />
+                </ProtectedRoute>
+              }
+            />
 
-              <Route
-                path="/my-drivers"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <MyDrivers />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Truck Management - owner/admin only */}
+            <Route
+              path="trucks"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TruckList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trucks/new"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TruckForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trucks/:id"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TruckDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trucks/:id/edit"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TruckForm />
+                </ProtectedRoute>
+              }
+            />
 
-              {/* Truck Management - owners/admins only */}
-              <Route
-                path="trucks"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TruckList />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trucks/new"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TruckForm />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trucks/:id"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TruckDetails />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trucks/:id/edit"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TruckForm />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trips"
-                element={
-                  <ProtectedRoute roles={["owner", "admin", "driver"]}>
-                    <TripList />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trips/new"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TripForm />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trips/:id"
-                element={
-                  <ProtectedRoute roles={["owner", "admin", "driver"]}>
-                    <TripDetails />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="trips/:id/edit"
-                element={
-                  <ProtectedRoute roles={["owner", "admin"]}>
-                    <TripForm />
-                  </ProtectedRoute>
-                }
-              />
-              {/* Driver-only routes */}
-              <Route element={<ProtectedRoute roles={["driver"]} />}>
-                <Route path="my-trips" element={<TripList isDriverView />} />
-                <Route path="trips/:id" element={<TripDetails />} />
-              </Route>
-              {/* Notifications page */}
-              <Route
-                path="notifications"
-                element={
-                  <ProtectedRoute roles={["owner", "admin", "driver"]}>
-                    <NotificationsList />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Trips */}
+            <Route
+              path="trips"
+              element={
+                <ProtectedRoute roles={["owner", "admin", "driver"]}>
+                  <TripList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trips/new"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TripForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trips/:id"
+              element={
+                <ProtectedRoute roles={["owner", "admin", "driver"]}>
+                  <TripDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="trips/:id/edit"
+              element={
+                <ProtectedRoute roles={["owner", "admin"]}>
+                  <TripForm />
+                </ProtectedRoute>
+              }
+            />
 
-              {/* 404 for all other authenticated paths */}
-              <Route path="*" element={<div>Page Not Found</div>} />
+            {/* Driver-only routes */}
+            <Route element={<ProtectedRoute roles={["driver"]} />}>
+              <Route path="my-trips" element={<TripList isDriverView />} />
+              <Route path="trips/:id" element={<TripDetails />} />
             </Route>
-          ) : (
-            <>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route
-                path="/register-driver"
-                element={<RegisterDriverFromInvite />}
-              />
-            </>
-          )}
+
+            {/* Notifications */}
+            <Route
+              path="notifications"
+              element={
+                <ProtectedRoute roles={["owner", "admin", "driver"]}>
+                  <NotificationsList />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch all for authenticated */}
+            <Route path="*" element={<div>Page Not Found</div>} />
+          </Route>
+
+          {/* Catch all for unauthenticated */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </NotificationProvider>
     </Router>
