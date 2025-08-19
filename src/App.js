@@ -29,6 +29,7 @@ import TripForm from "./features/trips/TripForm";
 import TripDetails from "./features/trips/TripDetails";
 import NotificationsList from "./features/notifications/NotificationList";
 import MyDrivers from "./features/drivers/MyDrivers";
+import ResetPassword from "./features/auth/ResetPassword";
 
 import "./App.css";
 
@@ -86,6 +87,17 @@ function App() {
               )
             }
           />
+
+          <Route
+  path="/reset-password"
+  element={
+    !isAuthenticated ? (
+      <ResetPassword />
+    ) : (
+      <Navigate to="/dashboard" replace />
+    )
+  }
+/>
 
           {/* Protected routes (directly under /) */}
           <Route

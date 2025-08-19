@@ -34,7 +34,27 @@ export const authApi = baseApi.injectEndpoints({
 
       providesTags: ["MyDrivers"],
     }),
+    forgotPassword: builder.mutation({
+      query: (email) => ({
+        url: "/auth/forgot-password",
+        method: "POST",
+        body:  email ,
+      }),
+    }),
+    
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    
+    validateResetToken: builder.query({
+      query: (token) => `/auth/validate-reset-token/${token}`,
+    }),
   }),
+  
   overrideExisting: false,
 });
 
@@ -44,4 +64,7 @@ export const {
   useGetCurrentUserQuery,
   useGetDriversQuery,
   useRegisterDriverFromInviteMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useValidateResetTokenQuery,
 } = authApi;

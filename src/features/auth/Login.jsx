@@ -7,20 +7,30 @@ import {
   Form,
   Button,
   Alert,
+  Modal,
+  InputGroup,
+  FormControl,
 } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useForgotPasswordMutation } from "../../api/authApi";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import loginImg from "../../assets/login.jpeg"; // Adjust path as necessary
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [forgotPassword] = useForgotPasswordMutation();
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   const from = location.state?.from?.pathname || "/dashboard";
 
@@ -32,13 +42,57 @@ const Login = () => {
     setError("");
     try {
       setLoading(true);
-      await login(formData);
-      toast.success("✅ Login successful");
-      navigate(from, { replace: true });
+      const response = await login(formData).unwrap();
+
+      // ✅ Check if login was actually successful
+      if (response && response.token) {
+        toast.success("✅ Login successful");
+        navigate(from, { replace: true });
+      } else {
+        throw new Error("Login failed");
+      }
     } catch (err) {
-      setError(err?.data?.message || "Invalid credentials");
+      console.error("Login error details:", err);
+
+      const errorMessage = err?.data?.message || "Invalid credentials";
+      setError(errorMessage);
+      toast.error(errorMessage);
+
+      // ✅ Check for specific error types before reloading
+      const shouldReload =
+        err?.status === 400 || // Bad request
+        err?.status === 401 || // Unauthorized
+        err?.data?.message?.includes("Invalid") || // Invalid credentials message
+        err?.data?.message?.includes("invalid"); // Invalid credentials message
+
+      if (shouldReload) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Add forgot password handler
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    if (!forgotEmail) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    try {
+      setForgotLoading(true);
+      await forgotPassword({ email: forgotEmail }).unwrap();
+      toast.success("If the email exists, a reset link has been sent");
+      setShowForgotPassword(false);
+      setForgotEmail("");
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to send reset email");
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -116,14 +170,22 @@ const Login = () => {
 
               <Form.Group className="mb-3" controlId="formPassword">
                 <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  required
-                />
+                <InputGroup>
+                  <FormControl
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1} // skip tab stop for accessibility
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </Button>
+                </InputGroup>
               </Form.Group>
 
               <Button
@@ -135,13 +197,63 @@ const Login = () => {
                 {loading ? "Logging in..." : "Login"}
               </Button>
             </Form>
-
+            <div className="text-center mt-3">
+              <Button
+                variant="link"
+                onClick={() => setShowForgotPassword(true)}
+                style={{ padding: 0, textDecoration: "none" }}
+              >
+                Forgot Password?
+              </Button>
+            </div>
             <div className="text-center">
               New user? <Link to="/register">Register here</Link>
             </div>
           </Card.Body>
         </Card>
       </Col>
+
+      {/* Forgot Password Modal */}
+      <Modal
+        show={showForgotPassword}
+        onHide={() => setShowForgotPassword(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleForgotPassword}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter your email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                required
+              />
+              <Form.Text className="text-muted">
+                We'll send a password reset link to your email.
+              </Form.Text>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowForgotPassword(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleForgotPassword}
+            disabled={forgotLoading}
+          >
+            {forgotLoading ? "Sending..." : "Send Reset Link"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

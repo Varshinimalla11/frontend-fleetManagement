@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
   const {
     data: currentUser,
     isLoading: isFetchingUser,
-    refetch,
+    refetch,isFetching,isUninitialized
   } = useGetCurrentUserQuery(undefined, {
     skip: !token, // only skip if no token
   });
@@ -55,7 +55,9 @@ export const AuthProvider = ({ children }) => {
       setToken(res.token);
       if (res.user) setUser(res.user);
       // Refetch current user to ensure latest details
+       if (!isUninitialized) {
       await refetch();
+    }
       return res;
     } catch (error) {
       console.error("Login error:", error);

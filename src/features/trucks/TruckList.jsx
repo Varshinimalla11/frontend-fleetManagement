@@ -1,6 +1,13 @@
 // src/components/TruckList.jsx
-import React from "react";
-import { Table, Button, Container, Spinner, Badge } from "react-bootstrap";
+import React, { useState } from "react";
+import {
+  Table,
+  Button,
+  Container,
+  Spinner,
+  Badge,
+  Modal,
+} from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetTrucksQuery, useDeleteTruckMutation } from "../../api/trucksApi";
 import { toast } from "react-toastify";
@@ -13,6 +20,9 @@ const TruckList = () => {
   const { data: trucks, error, isLoading } = useGetTrucksQuery();
   const [deleteTruck, { isLoading: isDeleting }] = useDeleteTruckMutation();
   const navigate = useNavigate();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTruck, setSelectedTruck] = useState(null);
   const { refetch } = useGetDashboardStatsQuery(undefined, { skip: false });
 
   const conditionColors = {
@@ -21,16 +31,26 @@ const TruckList = () => {
     in_maintenance: "danger",
     inactive: "secondary",
   };
+  const handleShowDeleteModal = (truck) => {
+    setSelectedTruck(truck);
+    setShowDeleteModal(true);
+  };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure to delete this truck?")) {
-      try {
-        await deleteTruck(id).unwrap();
-        toast.success("Truck deleted successfully");
-        refetch();
-      } catch (err) {
-        toast.error("Failed to delete truck");
-      }
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedTruck(null);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteTruck(selectedTruck._id).unwrap();
+      toast.success("Truck deleted successfully");
+      refetch();
+    } catch {
+      toast.error("Failed to delete truck");
+    } finally {
+      handleCloseDeleteModal();
+      navigate("/trucks");
     }
   };
 
@@ -113,7 +133,7 @@ const TruckList = () => {
                         variant="outline-danger"
                         size="sm"
                         title="Delete Truck"
-                        onClick={() => handleDelete(truck._id)}
+                        onClick={() => handleShowDeleteModal(truck)}
                       >
                         <FaTrash />
                       </Button>
@@ -130,6 +150,29 @@ const TruckList = () => {
             )}
           </tbody>
         </Table>
+        <Modal show={showDeleteModal} onHide={handleCloseDeleteModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Delete</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            Are you sure you want to delete truck{" "}
+            <strong>{selectedTruck?.plate_number}</strong>?
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseDeleteModal}>
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </div>
   );
