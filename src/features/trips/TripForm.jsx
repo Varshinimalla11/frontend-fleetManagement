@@ -118,6 +118,7 @@ const TripForm = () => {
       if (isEdit) {
         await updateTrip({ id, ...submitData }).unwrap();
         toast.success("Trip updated successfully");
+        refetch();
 
         navigate(`/trips/${id}`);
       } else {
@@ -357,16 +358,18 @@ const TripForm = () => {
 
           <Form.Group className="mb-3">
             <Form.Label>Status</Form.Label>
-            <Form.Select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
-              <option value="scheduled">Scheduled</option>
-              <option value="ongoing">Ongoing</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </Form.Select>
+            {isEdit ? (
+              <Form.Select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+              >
+                <option value="scheduled">Scheduled</option>
+                <option value="cancelled">Cancelled</option>
+              </Form.Select>
+            ) : (
+              <Form.Control type="text" name="status" value="scheduled" />
+            )}
           </Form.Group>
 
           <div className="d-flex gap-2">

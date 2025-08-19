@@ -34,8 +34,13 @@ const TripList = () => {
   const location = useLocation();
 
   // Always call both hooks (React Hooks must not be conditional!)
-  const tripsResult = useGetTripsQuery({ showDeleted });
-  const myTripsResult = useGetMyTripsQuery();
+  const tripsResult = useGetTripsQuery(
+    { showDeleted },
+    { pollingInterval: 6000 }
+  );
+  const myTripsResult = useGetMyTripsQuery(undefined, {
+    pollingInterval: 6000,
+  });
   const isDriver = user?.role === "driver";
 
   useEffect(() => {
@@ -109,7 +114,7 @@ const TripList = () => {
     <div
       style={{
         backgroundColor: "#9faaf4",
-        minHeight: "100vh",
+        minHeight: "94vh",
         width: "100%",
         padding: 0,
         margin: 0,
@@ -122,7 +127,7 @@ const TripList = () => {
       <div
         style={{
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: 900,
           background: "#fff",
           borderRadius: 16,
           boxShadow: "0 2px 16px #0002",
@@ -191,7 +196,9 @@ const TripList = () => {
                         filteredTrips.map((trip) => (
                           <tr
                             key={trip._id}
-                            className={trip.isDeleted ? "text-muted" : ""}
+                            className={
+                              trip.isDeleted ? "text-center text-muted" : ""
+                            }
                             style={
                               trip.isDeleted
                                 ? { textDecoration: "line-through" }

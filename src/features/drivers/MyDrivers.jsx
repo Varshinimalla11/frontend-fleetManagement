@@ -49,7 +49,7 @@ const MyDrivers = () => {
     <div
       style={{
         backgroundColor: "#9faaf4",
-        minHeight: "100vh",
+        minHeight: "94vh",
         width: "100%",
         padding: 0,
         margin: 0,
@@ -62,7 +62,7 @@ const MyDrivers = () => {
       <div
         style={{
           width: "100%",
-          maxWidth: 1000,
+          maxWidth: 900,
           background: "#fff",
           borderRadius: 16,
           boxShadow: "0 2px 16px #0002",

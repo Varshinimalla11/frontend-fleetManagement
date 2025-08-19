@@ -14,7 +14,7 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <Container style={{ marginTop: 20 }}>
+      <Container fluid style={{ padding: "0px" }}>
         <Outlet />
       </Container>
     </>

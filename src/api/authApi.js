@@ -27,10 +27,12 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["DashboardStats"],
+      invalidatesTags: ["DashboardStats", "MyDrivers"],
     }),
     getDrivers: builder.query({
       query: () => "/auth/my-drivers", // GET /api/drivers
+
+      providesTags: ["MyDrivers"],
     }),
   }),
   overrideExisting: false,

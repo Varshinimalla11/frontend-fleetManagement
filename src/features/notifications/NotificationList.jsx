@@ -84,7 +84,7 @@ const NotificationsList = () => {
           <thead>
             <tr>
               <th>Message</th>
-              <th>Received</th>
+              <th>Type</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -93,7 +93,7 @@ const NotificationsList = () => {
             {notifications.map((n) => (
               <tr key={n._id} className={!n.seen ? "fw-bold" : ""}>
                 <td>{n.message}</td>
-                <td>{moment(n.createdAt).fromNow()}</td>
+                <td>{n.type}</td>
                 <td>
                   {n.seen ? (
                     <Badge bg="success">Read</Badge>

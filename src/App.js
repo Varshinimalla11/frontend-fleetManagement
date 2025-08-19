@@ -47,6 +47,16 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <LandingPage />
+              )
+            }
+          />
+          <Route
             path="/login"
             element={
               !isAuthenticated ? (
@@ -77,10 +87,7 @@ function App() {
             }
           />
 
-          {/* Landing page accessible for everyone */}
-          <Route path="/" element={<LandingPage />} />
-
-          {/* Protected routes, guard with ProtectedRoute or Navigate */}
+          {/* Protected routes (directly under /) */}
           <Route
             path="/"
             element={
@@ -93,10 +100,6 @@ function App() {
               )
             }
           >
-            {/* Default route */}
-            <Route index element={<Navigate to="dashboard" replace />} />
-
-            {/* Dashboard */}
             <Route path="dashboard" element={<Dashboard />} />
 
             {/* Invite driver - owner/admin only */}
@@ -119,7 +122,7 @@ function App() {
               }
             />
 
-            {/* Truck Management - owner/admin only */}
+            {/* Truck Management */}
             <Route
               path="trucks"
               element={
@@ -203,7 +206,7 @@ function App() {
               }
             />
 
-            {/* Catch all for authenticated */}
+            {/* Catch all inside protected area */}
             <Route path="*" element={<div>Page Not Found</div>} />
           </Route>
 

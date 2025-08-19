@@ -41,8 +41,8 @@ const TruckList = () => {
     <div
       style={{
         backgroundColor: "#9faaf4",
-        minHeight: "100vh",
-        width: "110%",
+        minHeight: "94vh",
+        width: "100%",
         padding: 0,
         margin: 0,
         display: "flex",
