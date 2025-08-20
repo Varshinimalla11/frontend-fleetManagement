@@ -49,7 +49,7 @@ const LandingPage = () => {
           </button>
           <button
             className="btn btn-light mx-2 px-4"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/send-otp")}
           >
             Register
           </button>

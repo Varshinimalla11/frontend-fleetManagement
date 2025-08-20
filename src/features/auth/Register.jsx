@@ -8,7 +8,7 @@ import {
   Button,
   Alert,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 import loginImg from "../../assets/login.jpeg";
@@ -16,10 +16,15 @@ import loginImg from "../../assets/login.jpeg";
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+
+  if (!email) {
+    navigate("/send-otp");
+  }
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     password: "",
     confirmPassword: "",
     phone: "",
@@ -47,15 +52,21 @@ const Register = () => {
     try {
       setLoading(true);
       const { confirmPassword, ...apiData } = formData;
-      await register(apiData);
+      await register({ ...apiData, email });
       toast.success("✅ Registration successful. Please log in.");
       navigate("/login");
     } catch (err) {
       console.error("Registration error:", err);
       if (err?.status === 409) {
         setError(err.data.message); // duplicate email/phone friendly message
+        toast.error(
+          err.data.message || "Registration failed. Please try again."
+        );
       } else {
         setError(
+          err?.data?.message || "Registration failed. Please try again."
+        );
+        toast.error(
           err?.data?.message || "Registration failed. Please try again."
         );
       }
@@ -111,10 +122,10 @@ const Register = () => {
                   <Form.Control
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Enter email"
-                    required
+                    value={email}
+                    disabled
+                    // placeholder="Enter email"
+                    // required
                   />
                 </Form.Group>
 

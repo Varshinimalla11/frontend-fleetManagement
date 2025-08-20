@@ -8,14 +8,12 @@ import {
   Button,
   Alert,
   Modal,
-  InputGroup,
-  FormControl,
 } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForgotPasswordMutation } from "../../api/authApi";
 import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 import loginImg from "../../assets/login.jpeg"; // Adjust path as necessary
 
 const Login = () => {
@@ -23,7 +21,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [forgotPassword] = useForgotPasswordMutation();
-  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -170,22 +167,14 @@ const Login = () => {
 
               <Form.Group className="mb-3" controlId="formPassword">
                 <Form.Label>Password</Form.Label>
-                <InputGroup>
-                  <FormControl
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1} // skip tab stop for accessibility
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </Button>
-                </InputGroup>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                  required
+                />
               </Form.Group>
 
               <Button

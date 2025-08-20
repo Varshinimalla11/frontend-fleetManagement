@@ -30,6 +30,8 @@ import TripDetails from "./features/trips/TripDetails";
 import NotificationsList from "./features/notifications/NotificationList";
 import MyDrivers from "./features/drivers/MyDrivers";
 import ResetPassword from "./features/auth/ResetPassword";
+import SendOtpPage from "./features/auth/SendOtpPage";
+import VerifyOtpPage from "./features/auth/VerifyOtpPage";
 
 import "./App.css";
 
@@ -68,6 +70,26 @@ function App() {
             }
           />
           <Route
+            path="/send-otp"
+            element={
+              !isAuthenticated ? (
+                <SendOtpPage />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+          <Route
+            path="/verify-otp"
+            element={
+              !isAuthenticated ? (
+                <VerifyOtpPage />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
+          <Route
             path="/register"
             element={
               !isAuthenticated ? (
@@ -77,6 +99,7 @@ function App() {
               )
             }
           />
+
           <Route
             path="/register-driver"
             element={
@@ -89,15 +112,15 @@ function App() {
           />
 
           <Route
-  path="/reset-password"
-  element={
-    !isAuthenticated ? (
-      <ResetPassword />
-    ) : (
-      <Navigate to="/dashboard" replace />
-    )
-  }
-/>
+            path="/reset-password"
+            element={
+              !isAuthenticated ? (
+                <ResetPassword />
+              ) : (
+                <Navigate to="/dashboard" replace />
+              )
+            }
+          />
 
           {/* Protected routes (directly under /) */}
           <Route
