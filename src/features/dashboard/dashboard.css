@@ -1,0 +1,85 @@
+/* ===== Dashboard Background ===== */
+.dashboard-bg {
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ===== Stats Cards ===== */
+.dashboard-stats .card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.dashboard-stats .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-stats .card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.dashboard-stats .card h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #222;
+}
+
+/* Add icon colors */
+.dashboard-stats .card i {
+  font-size: 24px;
+  margin-bottom: 8px;
+  color: #0d6efd;
+}
+
+/* ===== Buttons ===== */
+.btn-lg {
+  border-radius: 30px;
+  padding: 12px 28px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-lg:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Modals ===== */
+.modal-content {
+  border-radius: 16px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.modal-header {
+  border-bottom: none;
+  background: #f8f9fa;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-footer {
+  border-top: none;
+  background: #f8f9fa;
+  border-radius: 0 0 16px 16px;
+}
+
+/* ===== Tables ===== */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f1f3f5;
+  color: #333;
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}

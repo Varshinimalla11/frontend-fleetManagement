@@ -1,7 +1,7 @@
 // src/components/TruckDetails.jsx
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { Container, Spinner, Button, Card, Badge } from "react-bootstrap";
+import { Spinner, Button, Card, Badge } from "react-bootstrap";
 import { useGetTruckByIdQuery } from "../../api/trucksApi";
 
 const TruckDetails = () => {
@@ -20,41 +20,40 @@ const TruckDetails = () => {
   if (!truck) return <div>Truck not found</div>;
 
   return (
-    <div
-      style={{
-        backgroundColor: "#9faaf4",
-        minHeight: "100vh",
-        width: "100%",
-        padding: 0,
-        margin: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <div className="bg-primary bg-opacity-25 min-vh-100 d-flex justify-content-center align-items-center p-3">
       <Card
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          borderRadius: 16,
-          boxShadow: "0 2px 16px #0002",
-        }}
+        className="shadow-lg border-0 rounded-4"
+        style={{ maxWidth: "420px", width: "100%" }}
       >
         <Card.Body className="p-4">
-          <h2 className="mb-4 fw-bold text-center">Truck Details</h2>
-          <div className="mb-3">
-            <b>Plate Number:</b> {truck.plate_number}
+          <h2 className="mb-4 fw-bold text-center text-primary">
+            Truck Details
+          </h2>
+          <div className="mb-3 p-3 bg-light rounded-3">
+            <span className="fw-semibold text-muted">Plate Number:</span>
+            <div className="fs-5 fw-bold text-dark">{truck.plate_number}</div>
           </div>
-          <div className="mb-3">
-            <b>Condition:</b>{" "}
-            <Badge bg={conditionColors[truck.condition]} className="fs-6">
-              {truck.condition.replace(/_/g, " ")}
-            </Badge>
+          <div className="mb-3 p-3 bg-light rounded-3">
+            <span className="fw-semibold text-muted">Condition:</span>
+            <div className="mt-2">
+              <Badge
+                bg={conditionColors[truck.condition]}
+                className="fs-6 px-3 py-2 rounded-pill"
+              >
+                {truck.condition.replace(/_/g, " ")}
+              </Badge>
+            </div>
           </div>
-          <div className="mb-4">
-            <b>Mileage Factor:</b> {truck.mileage_factor}
+          <div className="mb-4 p-3 bg-light rounded-3">
+            <span className="fw-semibold text-muted">Mileage Factor:</span>
+            <div className="fs-5 fw-bold text-dark">{truck.mileage_factor}</div>
           </div>
-          <Button as={Link} to="/trucks" variant="secondary" className="w-100">
+          <Button
+            as={Link}
+            to="/trucks"
+            variant="outline-primary"
+            className="w-100 py-2 fw-semibold rounded-3"
+          >
             Back to List
           </Button>
         </Card.Body>

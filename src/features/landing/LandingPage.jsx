@@ -16,39 +16,22 @@ const LandingPage = () => {
         minWidth: "100vw",
       }}
     >
-      <div
-        className="text-center"
-        style={{
-          background: "rgba(0,0,0,0.3)", // optional: translucent panel for readability
-          padding: "2rem 2.5rem",
-          borderRadius: 15,
-        }}
-      >
-        <h1
-          className="text-white mb-4"
-          style={{
-            fontWeight: 700,
-            fontSize: "2.5rem",
-            textShadow: "0 2px 12px #000",
-          }}
-        >
+      <div className="text-center bg-dark bg-opacity-50 p-4 p-md-5 rounded-4 shadow-lg">
+        <h1 className="text-white mb-4 fw-bold display-4">
           Truck Fleet Management
         </h1>
-        <p
-          className="text-white mb-4"
-          style={{ fontSize: "1.25rem", textShadow: "0 2px 8px #000a" }}
-        >
+        <p className="text-white mb-4 fs-5 fw-light">
           "Safety. Efficiency. Excellence."
         </p>
-        <div>
+        <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
           <button
-            className="btn btn-light mx-2 px-4"
+            className="btn btn-outline-light btn-lg px-4 py-2 fw-semibold rounded-3 shadow-sm"
             onClick={() => navigate("/login")}
           >
             Login
           </button>
           <button
-            className="btn btn-light mx-2 px-4"
+            className="btn btn-outline-light btn-lg px-4 py-2 fw-semibold rounded-3"
             onClick={() => navigate("/send-otp")}
           >
             Register

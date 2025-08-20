@@ -121,10 +121,13 @@ const Login = () => {
           }}
         />
         <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
-          <h1 className="fw-bold mb-3" style={{ textShadow: "0 2px 8px #000" }}>
+          <h1
+            className="fw-bold mb-3 display-4"
+            style={{ textShadow: "0 2px 8px #000" }}
+          >
             Welcome Back
           </h1>
-          <p style={{ fontSize: "1.3rem", textShadow: "0 2px 6px #000" }}>
+          <p className="fs-5 fw-light" style={{ textShadow: "0 2px 6px #000" }}>
             Enter your details to access your account.
           </p>
         </div>
@@ -133,46 +136,47 @@ const Login = () => {
       {/* Right half: Login form */}
       <Col
         md={6}
-        style={{
-          backgroundColor: "#9faaf4ff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "100vh",
-        }}
+        className="bg-primary bg-opacity-25 d-flex align-items-center justify-content-center"
+        style={{ minHeight: "100vh" }}
       >
         <Card
-          style={{
-            minWidth: 340,
-            maxWidth: 380,
-            width: "100%",
-            boxShadow: "0 2px 32px #0001",
-          }}
+          className="shadow-lg border-0 rounded-4"
+          style={{ minWidth: "340px", maxWidth: "380px", width: "100%" }}
         >
-          <Card.Body>
-            <h3 className="mb-4 text-center">Login</h3>
-            {error && <Alert variant="danger">{error}</Alert>}
+          <Card.Body className="p-4">
+            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+            {error && (
+              <Alert variant="danger" className="rounded-3">
+                {error}
+              </Alert>
+            )}
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
+                <Form.Label className="fw-semibold text-muted">
+                  Email
+                </Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  className="rounded-3 py-2"
                   required
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formPassword">
-                <Form.Label>Password</Form.Label>
+              <Form.Group className="mb-4" controlId="formPassword">
+                <Form.Label className="fw-semibold text-muted">
+                  Password
+                </Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter password"
+                  className="rounded-3 py-2"
                   required
                 />
               </Form.Group>
@@ -180,7 +184,7 @@ const Login = () => {
               <Button
                 type="submit"
                 variant="primary"
-                className="w-100"
+                className="w-100 py-2 fw-semibold rounded-3 shadow-sm"
                 disabled={loading}
               >
                 {loading ? "Logging in..." : "Login"}
@@ -190,35 +194,41 @@ const Login = () => {
               <Button
                 variant="link"
                 onClick={() => setShowForgotPassword(true)}
-                style={{ padding: 0, textDecoration: "none" }}
+                className="text-decoration-none fw-semibold"
               >
                 Forgot Password?
               </Button>
             </div>
             <div className="text-center">
-              New user? <Link to="/register">Register here</Link>
+              <span className="text-muted">New user? </span>
+              <Link to="/register" className="text-decoration-none fw-semibold">
+                Register here
+              </Link>
             </div>
           </Card.Body>
         </Card>
       </Col>
-
       {/* Forgot Password Modal */}
       <Modal
         show={showForgotPassword}
         onHide={() => setShowForgotPassword(false)}
+        centered
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Reset Password</Modal.Title>
+        <Modal.Header closeButton className="border-0 pb-0">
+          <Modal.Title className="fw-bold">Reset Password</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="py-4">
           <Form onSubmit={handleForgotPassword}>
             <Form.Group className="mb-3">
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label className="fw-semibold text-muted">
+                Email Address
+              </Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter your email"
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
+                className="rounded-3 py-2"
                 required
               />
               <Form.Text className="text-muted">
@@ -227,10 +237,11 @@ const Login = () => {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="border-0 pt-0">
           <Button
-            variant="secondary"
+            variant="outline-secondary"
             onClick={() => setShowForgotPassword(false)}
+            className="rounded-3 px-4"
           >
             Cancel
           </Button>
@@ -238,6 +249,7 @@ const Login = () => {
             variant="primary"
             onClick={handleForgotPassword}
             disabled={forgotLoading}
+            className="rounded-3 px-4 fw-semibold"
           >
             {forgotLoading ? "Sending..." : "Send Reset Link"}
           </Button>

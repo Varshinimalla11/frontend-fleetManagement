@@ -7,10 +7,7 @@ import {
   NavDropdown,
   Container,
   Badge,
-  Button,
-  Spinner,
 } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -105,7 +102,7 @@ const Navbar = () => {
                 <Nav.Link as={Link} to="/invite-driver">
                   <i className="fas fa-user-plus me-1"></i> Invite Driver
                 </Nav.Link>
-                 <Nav.Link as={Link} to="/my-drivers">
+                <Nav.Link as={Link} to="/my-drivers">
                   <i className="fas fa-user-plus me-1"></i> My Drivers
                 </Nav.Link>
               </>
