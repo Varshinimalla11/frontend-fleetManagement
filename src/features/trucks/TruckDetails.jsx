@@ -1,8 +1,8 @@
-// src/components/TruckDetails.jsx
-import React from "react";
+"use client";
 import { useParams, Link } from "react-router-dom";
 import { Spinner, Button, Card, Badge } from "react-bootstrap";
 import { useGetTruckByIdQuery } from "../../api/trucksApi";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const TruckDetails = () => {
   const { id } = useParams();
@@ -15,7 +15,7 @@ const TruckDetails = () => {
     inactive: "secondary",
   };
 
-  if (isLoading) return <Spinner animation="border" />;
+  if (isLoading) return <Spinner animation="border" role="status" />;
   if (error) return <div>Error loading truck details</div>;
   if (!truck) return <div>Truck not found</div>;
 
@@ -27,14 +27,21 @@ const TruckDetails = () => {
       >
         <Card.Body className="p-4">
           <h2 className="mb-4 fw-bold text-center text-primary">
+            <i className="fas fa-truck me-2"></i>
             Truck Details
           </h2>
           <div className="mb-3 p-3 bg-light rounded-3">
-            <span className="fw-semibold text-muted">Plate Number:</span>
+            <span className="fw-semibold text-muted">
+              <i className="fas fa-id-card me-2"></i>
+              Plate Number:
+            </span>
             <div className="fs-5 fw-bold text-dark">{truck.plate_number}</div>
           </div>
           <div className="mb-3 p-3 bg-light rounded-3">
-            <span className="fw-semibold text-muted">Condition:</span>
+            <span className="fw-semibold text-muted">
+              <i className="fas fa-cog me-2"></i>
+              Condition:
+            </span>
             <div className="mt-2">
               <Badge
                 bg={conditionColors[truck.condition]}
@@ -45,7 +52,10 @@ const TruckDetails = () => {
             </div>
           </div>
           <div className="mb-4 p-3 bg-light rounded-3">
-            <span className="fw-semibold text-muted">Mileage Factor:</span>
+            <span className="fw-semibold text-muted">
+              <i className="fas fa-tachometer-alt me-2"></i>
+              Mileage Factor:
+            </span>
             <div className="fs-5 fw-bold text-dark">{truck.mileage_factor}</div>
           </div>
           <Button
@@ -54,6 +64,7 @@ const TruckDetails = () => {
             variant="outline-primary"
             className="w-100 py-2 fw-semibold rounded-3"
           >
+            <i className="fas fa-arrow-left me-2"></i>
             Back to List
           </Button>
         </Card.Body>

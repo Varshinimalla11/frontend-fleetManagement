@@ -1,3 +1,5 @@
+"use client";
+
 import {
   useGetTripsQuery,
   useDeleteTripMutation,
@@ -139,23 +141,46 @@ const TripList = () => {
         }}
       >
         <Col>
-          <div className="d-flex justify-content-between align-items-center">
-            <h1>
+          <div
+            className="d-flex justify-content-between align-items-center mb-4 p-3 rounded"
+            style={{
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+            }}
+          >
+            <h1 className="mb-0 fw-bold">
+              <i className="fas fa-route me-2"></i>
               {isDriver ? "My Trips" : showDeleted ? "Deleted Trips" : "Trips"}
             </h1>
             <div>
               {!isDriver && (
                 <Button
-                  variant={showDeleted ? "outline-secondary" : "outline-danger"}
-                  className="me-2"
+                  variant={showDeleted ? "light" : "outline-light"}
+                  className="me-2 fw-semibold"
                   onClick={() => setShowDeleted(!showDeleted)}
+                  style={{ borderWidth: "2px" }}
                 >
+                  <i
+                    className={`fas ${
+                      showDeleted ? "fa-eye" : "fa-eye-slash"
+                    } me-1`}
+                  ></i>
                   {showDeleted ? "Show Active Trips" : "Show Deleted Trips"}
                 </Button>
               )}
               {(user.role === "owner" || user.role === "admin") &&
                 !showDeleted && (
-                  <Button as={Link} to="/trips/new" variant="primary">
+                  <Button
+                    as={Link}
+                    to="/trips/new"
+                    variant="success"
+                    className="fw-semibold"
+                    style={{
+                      background: "linear-gradient(45deg, #28a745, #20c997)",
+                      border: "none",
+                      boxShadow: "0 2px 8px rgba(40, 167, 69, 0.3)",
+                    }}
+                  >
                     <i className="fas fa-plus me-2"></i>
                     Create New Trip
                   </Button>
@@ -166,19 +191,42 @@ const TripList = () => {
 
         <Row>
           <Col>
-            <Card>
-              <Card.Body>
+            <Card className="shadow-sm border-0">
+              <Card.Body className="p-0">
                 {filteredTrips.length > 0 ? (
-                  <Table striped bordered responsive hover>
-                    <thead>
+                  <Table striped hover responsive className="mb-0">
+                    <thead
+                      style={{
+                        background: "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+                      }}
+                    >
                       <tr>
-                        <th>Origin</th>
-                        <th>Destination</th>
-                        <th>Truck</th>
-                        <th>Driver</th>
-                        <th>Start Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-map-marker-alt me-1 text-primary"></i>
+                          Origin
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-flag-checkered me-1 text-success"></i>
+                          Destination
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-truck me-1 text-info"></i>Truck
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-user me-1 text-warning"></i>
+                          Driver
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-calendar me-1 text-secondary"></i>
+                          Start Date
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-info-circle me-1 text-primary"></i>
+                          Status
+                        </th>
+                        <th className="fw-semibold text-dark">
+                          <i className="fas fa-cogs me-1 text-dark"></i>Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -230,6 +278,11 @@ const TripList = () => {
                                     variant="outline-primary"
                                     size="sm"
                                     title="View"
+                                    className="d-flex align-items-center"
+                                    style={{
+                                      minWidth: "40px",
+                                      justifyContent: "center",
+                                    }}
                                   >
                                     <FaEye />
                                   </Button>
@@ -242,6 +295,11 @@ const TripList = () => {
                                         variant="outline-success"
                                         size="sm"
                                         title="Edit"
+                                        className="d-flex align-items-center"
+                                        style={{
+                                          minWidth: "40px",
+                                          justifyContent: "center",
+                                        }}
                                         disabled={
                                           trip.status === "completed" ||
                                           trip.status === "cancelled"
@@ -254,6 +312,11 @@ const TripList = () => {
                                         size="sm"
                                         onClick={() => handleDeleteClick(trip)}
                                         title="Delete"
+                                        className="d-flex align-items-center"
+                                        style={{
+                                          minWidth: "40px",
+                                          justifyContent: "center",
+                                        }}
                                         disabled={
                                           trip.status === "completed" ||
                                           trip.status === "cancelled"
@@ -270,7 +333,9 @@ const TripList = () => {
                                   size="sm"
                                   onClick={() => handleRestore(trip._id)}
                                   title="Restore"
+                                  className="fw-semibold"
                                 >
+                                  <i className="fas fa-undo me-1"></i>
                                   Restore
                                 </Button>
                               )}
@@ -282,8 +347,14 @@ const TripList = () => {
                   </Table>
                 ) : (
                   <div className="text-center py-5">
-                    <i className="fas fa-route fa-3x text-muted mb-3"></i>
-                    <p className="text-center py-5">
+                    <div className="mb-4">
+                      <i
+                        className="fas fa-route fa-4x text-muted mb-3"
+                        style={{ opacity: 0.3 }}
+                      ></i>
+                    </div>
+                    <h5 className="text-muted mb-3">No Trips Found</h5>
+                    <p className="text-muted mb-4">
                       No{" "}
                       {showDeleted
                         ? "deleted"
@@ -294,8 +365,19 @@ const TripList = () => {
                     </p>
                     {(user.role === "owner" || user.role === "admin") &&
                       !showDeleted && (
-                        <Button as={Link} to="/trips/new" variant="primary">
-                          Create New Trip
+                        <Button
+                          as={Link}
+                          to="/trips/new"
+                          variant="primary"
+                          className="fw-semibold px-4 py-2"
+                          style={{
+                            background:
+                              "linear-gradient(45deg, #007bff, #0056b3)",
+                            border: "none",
+                          }}
+                        >
+                          <i className="fas fa-plus me-2"></i>
+                          Create Your First Trip
                         </Button>
                       )}
                   </div>

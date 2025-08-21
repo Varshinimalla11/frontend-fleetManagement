@@ -1,14 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Form,
-  Button,
-  Alert,
-  Spinner,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateTripMutation,
@@ -20,6 +13,7 @@ import { useGetDriversQuery } from "../../api/authApi";
 // import { useGetTrucksQuery } from "../dashboard/dashboardApi";
 import { useGetTrucksQuery } from "../../api/trucksApi";
 import { useGetDashboardStatsQuery } from "../../api/dashboardApi";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const TripForm = () => {
   const { id } = useParams();
@@ -191,16 +185,30 @@ const TripForm = () => {
           paddingRight: "1rem",
         }}
       >
-        <h2 className="mb-4 text-center">
-          {isEdit ? "Edit Trip" : "Create New Trip"}
-        </h2>
+        <div className="text-center mb-4">
+          <h2 className="fw-bold text-primary mb-2">
+            <i
+              className={`fas ${isEdit ? "fa-edit" : "fa-plus-circle"} me-2`}
+            ></i>
+            {isEdit ? "Edit Trip" : "Create New Trip"}
+          </h2>
+          <p className="text-muted">
+            {isEdit
+              ? "Update trip information below"
+              : "Fill in the details to create a new trip"}
+          </p>
+        </div>
+
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Origin *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-map-marker-alt text-primary me-1"></i>
+                  Origin *
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="origin"
@@ -208,12 +216,17 @@ const TripForm = () => {
                   onChange={handleChange}
                   required
                   placeholder="Starting location"
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #007bff" }}
                 />
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Destination *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-flag-checkered text-success me-1"></i>
+                  Destination *
+                </Form.Label>
                 <Form.Control
                   type="text"
                   name="destination"
@@ -221,6 +234,8 @@ const TripForm = () => {
                   onChange={handleChange}
                   required
                   placeholder="Destination location"
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #28a745" }}
                 />
               </Form.Group>
             </Col>
@@ -229,11 +244,16 @@ const TripForm = () => {
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Truck</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-truck text-info me-1"></i>
+                  Truck
+                </Form.Label>
                 <Form.Select
                   name="truck"
                   value={formData.truck}
                   onChange={handleChange}
+                  className="form-select-lg"
+                  style={{ borderLeft: "4px solid #17a2b8" }}
                 >
                   <option value="">Select a truck</option>
                   {trucks
@@ -248,12 +268,17 @@ const TripForm = () => {
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Driver *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-user text-warning me-1"></i>
+                  Driver *
+                </Form.Label>
                 <Form.Select
                   name="driver"
                   value={formData.driver}
                   onChange={handleChange}
                   required
+                  className="form-select-lg"
+                  style={{ borderLeft: "4px solid #ffc107" }}
                 >
                   <option value="">Select a driver</option>
                   {drivers.map((driver) => (
@@ -267,26 +292,49 @@ const TripForm = () => {
           </Row>
 
           {selectedDriverDetails && (
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center mb-4">
               <Card
-                className="mb-3 p-3 bg-light text-center"
-                style={{ maxWidth: "400px" }}
+                className="p-3 shadow-sm border-0"
+                style={{
+                  maxWidth: "400px",
+                  background: "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+                  borderLeft: "4px solid #ffc107",
+                }}
               >
-                <h5>Driver Snapshot:</h5>
-                <p>
-                  <strong>Name:</strong> {selectedDriverDetails.name}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {selectedDriverDetails.phone}
-                </p>
-                <p>
-                  <strong>Aadhaar Number:</strong>{" "}
-                  {selectedDriverDetails.aadhar_number}
-                </p>
-                <p>
-                  <strong>License Number:</strong>{" "}
-                  {selectedDriverDetails.license_number}
-                </p>
+                <div className="text-center">
+                  <h5 className="text-primary mb-3">
+                    <i className="fas fa-id-card me-2"></i>
+                    Driver Information
+                  </h5>
+                  <div className="text-start">
+                    <p className="mb-2">
+                      <strong>
+                        <i className="fas fa-user me-1 text-primary"></i>Name:
+                      </strong>{" "}
+                      {selectedDriverDetails.name}
+                    </p>
+                    <p className="mb-2">
+                      <strong>
+                        <i className="fas fa-phone me-1 text-success"></i>Phone:
+                      </strong>{" "}
+                      {selectedDriverDetails.phone}
+                    </p>
+                    <p className="mb-2">
+                      <strong>
+                        <i className="fas fa-id-card me-1 text-info"></i>
+                        Aadhaar:
+                      </strong>{" "}
+                      {selectedDriverDetails.aadhar_number}
+                    </p>
+                    <p className="mb-0">
+                      <strong>
+                        <i className="fas fa-id-badge me-1 text-warning"></i>
+                        License:
+                      </strong>{" "}
+                      {selectedDriverDetails.license_number}
+                    </p>
+                  </div>
+                </div>
               </Card>
             </div>
           )}
@@ -294,24 +342,34 @@ const TripForm = () => {
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Start Date *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-calendar-alt text-primary me-1"></i>
+                  Start Date *
+                </Form.Label>
                 <Form.Control
                   type="datetime-local"
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleChange}
                   required
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #007bff" }}
                 />
               </Form.Group>
             </Col>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>End Date</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-calendar-check text-success me-1"></i>
+                  End Date
+                </Form.Label>
                 <Form.Control
                   type="datetime-local"
                   name="endDate"
                   value={formData.endDate}
                   onChange={handleChange}
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #28a745" }}
                 />
               </Form.Group>
             </Col>
@@ -320,63 +378,99 @@ const TripForm = () => {
           <Row>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Total KM *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-road text-info me-1"></i>
+                  Total KM *
+                </Form.Label>
                 <Form.Control
                   type="number"
                   name="totalKm"
                   value={formData.totalKm}
                   onChange={handleChange}
                   required
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #17a2b8" }}
                 />
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Cargo Weight (kg) *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-weight-hanging text-warning me-1"></i>
+                  Cargo Weight (kg) *
+                </Form.Label>
                 <Form.Control
                   type="number"
                   name="cargoWeight"
                   value={formData.cargoWeight}
                   onChange={handleChange}
                   required
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #ffc107" }}
                 />
               </Form.Group>
             </Col>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Fuel at Start (litres) *</Form.Label>
+                <Form.Label className="fw-semibold">
+                  <i className="fas fa-gas-pump text-danger me-1"></i>
+                  Fuel at Start (litres) *
+                </Form.Label>
                 <Form.Control
                   type="number"
                   name="fuelStart"
                   value={formData.fuelStart}
                   onChange={handleChange}
                   required
+                  className="form-control-lg"
+                  style={{ borderLeft: "4px solid #dc3545" }}
                 />
               </Form.Group>
             </Col>
           </Row>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Status</Form.Label>
+          <Form.Group className="mb-4">
+            <Form.Label className="fw-semibold">
+              <i className="fas fa-info-circle text-primary me-1"></i>
+              Status
+            </Form.Label>
             {isEdit ? (
               <Form.Select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
+                className="form-select-lg"
+                style={{ borderLeft: "4px solid #007bff" }}
               >
                 <option value="scheduled">Scheduled</option>
                 <option value="cancelled">Cancelled</option>
               </Form.Select>
             ) : (
-              <Form.Control type="text" name="status" value="scheduled" />
+              <Form.Control
+                type="text"
+                name="status"
+                value="scheduled"
+                readOnly
+                className="form-control-lg bg-light"
+                style={{ borderLeft: "4px solid #6c757d" }}
+              />
             )}
           </Form.Group>
 
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-3 justify-content-center">
             <Button
               variant="primary"
               type="submit"
               disabled={creating || updating}
+              className="px-4 py-2 fw-semibold"
+              style={{
+                background:
+                  creating || updating
+                    ? undefined
+                    : "linear-gradient(45deg, #007bff, #0056b3)",
+                border: "none",
+                minWidth: "140px",
+              }}
             >
               {creating || updating ? (
                 <>
@@ -386,13 +480,22 @@ const TripForm = () => {
                   />
                   Saving...
                 </>
-              ) : isEdit ? (
-                "Update Trip"
               ) : (
-                "Create Trip"
+                <>
+                  <i
+                    className={`fas ${isEdit ? "fa-save" : "fa-plus"} me-2`}
+                  ></i>
+                  {isEdit ? "Update Trip" : "Create Trip"}
+                </>
               )}
             </Button>
-            <Button variant="secondary" onClick={() => navigate("/trips")}>
+            <Button
+              variant="outline-secondary"
+              onClick={() => navigate("/trips")}
+              className="px-4 py-2 fw-semibold"
+              style={{ minWidth: "120px" }}
+            >
+              <i className="fas fa-times me-2"></i>
               Cancel
             </Button>
           </div>

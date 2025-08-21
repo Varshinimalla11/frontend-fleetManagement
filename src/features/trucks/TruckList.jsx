@@ -1,13 +1,8 @@
+"use client";
+
 // src/components/TruckList.jsx
-import React, { useState } from "react";
-import {
-  Table,
-  Button,
-  Container,
-  Spinner,
-  Badge,
-  Modal,
-} from "react-bootstrap";
+import { useState } from "react";
+import { Table, Button, Spinner, Badge, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetTrucksQuery, useDeleteTruckMutation } from "../../api/trucksApi";
 import { toast } from "react-toastify";
@@ -54,14 +49,25 @@ const TruckList = () => {
     }
   };
 
-  if (isLoading) return <Spinner animation="border" />;
-  if (error) return <div>Error loading trucks</div>;
+  if (isLoading)
+    return (
+      <div className="bg-primary bg-opacity-25 min-vh-100 d-flex justify-content-center align-items-center">
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="bg-primary bg-opacity-25 min-vh-100 d-flex justify-content-center align-items-center">
+        <div className="alert alert-danger">Error loading trucks</div>
+      </div>
+    );
 
   return (
     <div className="bg-primary bg-opacity-25 min-vh-100 py-4">
       <div className="container-fluid" style={{ maxWidth: "1000px" }}>
         <div className="bg-white rounded-4 shadow-lg p-4">
           <h3 className="mb-4 text-center fw-bold text-primary">
+            <i className="fas fa-truck me-2"></i>
             Truck Fleet Management
           </h3>
           {(user?.role === "owner" || user?.role === "admin") && (
@@ -82,12 +88,22 @@ const TruckList = () => {
             <Table className="table-hover mb-0">
               <thead className="bg-light">
                 <tr>
-                  <th className="fw-semibold text-muted py-3">Plate Number</th>
-                  <th className="fw-semibold text-muted py-3">Condition</th>
                   <th className="fw-semibold text-muted py-3">
+                    <i className="fas fa-id-card me-2"></i>
+                    Plate Number
+                  </th>
+                  <th className="fw-semibold text-muted py-3">
+                    <i className="fas fa-cog me-2"></i>
+                    Condition
+                  </th>
+                  <th className="fw-semibold text-muted py-3">
+                    <i className="fas fa-tachometer-alt me-2"></i>
                     Mileage Factor
                   </th>
-                  <th className="fw-semibold text-muted py-3">Actions</th>
+                  <th className="fw-semibold text-muted py-3">
+                    <i className="fas fa-tools me-2"></i>
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -97,7 +113,7 @@ const TruckList = () => {
                       <td className="py-3">
                         <Link
                           to={`/trucks/${truck._id}`}
-                          className="text-decoration-none fw-semibold"
+                          className="text-decoration-none fw-semibold text-primary"
                         >
                           {truck.plate_number}
                         </Link>

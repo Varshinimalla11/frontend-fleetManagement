@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState } from "react";
 import {
   Container,
-  Row,
   Col,
   Card,
   Form,
@@ -104,31 +105,27 @@ const Login = () => {
         md={6}
         className="d-none d-md-flex flex-column justify-content-center align-items-center"
         style={{
-          background: `url(${loginImg}) center center/cover no-repeat`,
+          background: `linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(155, 89, 182, 0.9)), url(${loginImg}) center center/cover no-repeat`,
           color: "#fff",
           minHeight: "100vh",
           position: "relative",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0,
-            background: "rgba(0,0,0,0.35)",
-          }}
-        />
         <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
+          <div className="mb-4">
+            <i className="fas fa-truck fa-4x mb-3" style={{ opacity: 0.9 }}></i>
+          </div>
           <h1
             className="fw-bold mb-3 display-4"
-            style={{ textShadow: "0 2px 8px #000" }}
+            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
           >
             Welcome Back
           </h1>
-          <p className="fs-5 fw-light" style={{ textShadow: "0 2px 6px #000" }}>
-            Enter your details to access your account.
+          <p
+            className="fs-5 fw-light"
+            style={{ textShadow: "0 2px 6px rgba(0,0,0,0.3)" }}
+          >
+            Enter your details to access your fleet management dashboard.
           </p>
         </div>
       </Col>
@@ -136,24 +133,41 @@ const Login = () => {
       {/* Right half: Login form */}
       <Col
         md={6}
-        className="bg-primary bg-opacity-25 d-flex align-items-center justify-content-center"
-        style={{ minHeight: "100vh" }}
+        className="d-flex align-items-center justify-content-center"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          minHeight: "100vh",
+        }}
       >
         <Card
           className="shadow-lg border-0 rounded-4"
-          style={{ minWidth: "340px", maxWidth: "380px", width: "100%" }}
+          style={{
+            minWidth: "340px",
+            maxWidth: "420px",
+            width: "100%",
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
+          }}
         >
-          <Card.Body className="p-4">
-            <h3 className="mb-4 text-center fw-bold text-primary">Login</h3>
+          <Card.Body className="p-5">
+            <div className="text-center mb-4">
+              <i className="fas fa-user-circle fa-3x text-primary mb-3"></i>
+              <h3 className="fw-bold text-primary">Sign In</h3>
+              <p className="text-muted">Access your account</p>
+            </div>
+
             {error && (
-              <Alert variant="danger" className="rounded-3">
+              <Alert variant="danger" className="rounded-3 border-0">
+                <i className="fas fa-exclamation-triangle me-2"></i>
                 {error}
               </Alert>
             )}
+
             <Form onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="formEmail">
-                <Form.Label className="fw-semibold text-muted">
-                  Email
+                <Form.Label className="fw-semibold text-dark">
+                  <i className="fas fa-envelope me-2 text-primary"></i>
+                  Email Address
                 </Form.Label>
                 <Form.Control
                   type="email"
@@ -161,13 +175,18 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
-                  className="rounded-3 py-2"
+                  className="rounded-3 py-3 border-0 shadow-sm"
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "4px solid #007bff",
+                  }}
                   required
                 />
               </Form.Group>
 
               <Form.Group className="mb-4" controlId="formPassword">
-                <Form.Label className="fw-semibold text-muted">
+                <Form.Label className="fw-semibold text-dark">
+                  <i className="fas fa-lock me-2 text-primary"></i>
                   Password
                 </Form.Label>
                 <Form.Control
@@ -175,52 +194,104 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Enter password"
-                  className="rounded-3 py-2"
+                  placeholder="Enter your password"
+                  className="rounded-3 py-3 border-0 shadow-sm"
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "4px solid #007bff",
+                  }}
                   required
                 />
               </Form.Group>
 
               <Button
                 type="submit"
-                variant="primary"
-                className="w-100 py-2 fw-semibold rounded-3 shadow-sm"
+                className="w-100 py-3 fw-semibold rounded-3 border-0 shadow-sm mb-3"
+                style={{
+                  background: "linear-gradient(135deg, #007bff, #0056b3)",
+                  transition: "all 0.3s ease",
+                }}
                 disabled={loading}
+                onMouseEnter={(e) =>
+                  (e.target.style.transform = "translateY(-2px)")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.transform = "translateY(0)")
+                }
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                    ></span>
+                    Signing In...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-sign-in-alt me-2"></i>
+                    Sign In
+                  </>
+                )}
               </Button>
             </Form>
-            <div className="text-center mt-3">
+
+            <div className="text-center">
               <Button
                 variant="link"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-decoration-none fw-semibold"
+                className="text-decoration-none fw-semibold text-primary p-0 mb-3"
               >
+                <i className="fas fa-key me-1"></i>
                 Forgot Password?
               </Button>
             </div>
+
+            <hr className="my-3" />
+
             <div className="text-center">
-              <span className="text-muted">New user? </span>
-              <Link to="/register" className="text-decoration-none fw-semibold">
-                Register here
+              <span className="text-muted">New to our platform? </span>
+              <Link
+                to="/register"
+                className="text-decoration-none fw-semibold text-primary"
+              >
+                <i className="fas fa-user-plus me-1"></i>
+                Create Account
               </Link>
             </div>
           </Card.Body>
         </Card>
       </Col>
-      {/* Forgot Password Modal */}
+
+      {/* Enhanced Forgot Password Modal */}
       <Modal
         show={showForgotPassword}
         onHide={() => setShowForgotPassword(false)}
         centered
+        backdrop="static"
       >
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title className="fw-bold">Reset Password</Modal.Title>
+        <Modal.Header
+          closeButton
+          className="border-0 pb-0"
+          style={{ background: "linear-gradient(135deg, #007bff, #0056b3)" }}
+        >
+          <Modal.Title className="fw-bold text-white">
+            <i className="fas fa-key me-2"></i>
+            Reset Password
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-4">
+          <div className="text-center mb-3">
+            <i className="fas fa-envelope-open fa-3x text-primary mb-3"></i>
+            <p className="text-muted">
+              Enter your email address and we'll send you a link to reset your
+              password.
+            </p>
+          </div>
           <Form onSubmit={handleForgotPassword}>
             <Form.Group className="mb-3">
-              <Form.Label className="fw-semibold text-muted">
+              <Form.Label className="fw-semibold text-dark">
+                <i className="fas fa-envelope me-2 text-primary"></i>
                 Email Address
               </Form.Label>
               <Form.Control
@@ -228,12 +299,13 @@ const Login = () => {
                 placeholder="Enter your email"
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
-                className="rounded-3 py-2"
+                className="rounded-3 py-3 border-0 shadow-sm"
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  borderLeft: "4px solid #007bff",
+                }}
                 required
               />
-              <Form.Text className="text-muted">
-                We'll send a password reset link to your email.
-              </Form.Text>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -241,17 +313,31 @@ const Login = () => {
           <Button
             variant="outline-secondary"
             onClick={() => setShowForgotPassword(false)}
-            className="rounded-3 px-4"
+            className="rounded-3 px-4 fw-semibold"
           >
+            <i className="fas fa-times me-1"></i>
             Cancel
           </Button>
           <Button
-            variant="primary"
             onClick={handleForgotPassword}
             disabled={forgotLoading}
-            className="rounded-3 px-4 fw-semibold"
+            className="rounded-3 px-4 fw-semibold border-0"
+            style={{ background: "linear-gradient(135deg, #007bff, #0056b3)" }}
           >
-            {forgotLoading ? "Sending..." : "Send Reset Link"}
+            {forgotLoading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                ></span>
+                Sending...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-paper-plane me-1"></i>
+                Send Reset Link
+              </>
+            )}
           </Button>
         </Modal.Footer>
       </Modal>

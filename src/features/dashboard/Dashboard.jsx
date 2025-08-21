@@ -122,9 +122,19 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Container className="mt-4 text-center">
-        <Spinner animation="border" variant="primary" />
-        <div>Loading dashboard...</div>
+      <Container className="mt-5 text-center">
+        <div
+          className="d-flex flex-column align-items-center justify-content-center"
+          style={{ minHeight: "50vh" }}
+        >
+          <Spinner
+            animation="border"
+            variant="primary"
+            size="lg"
+            className="mb-3"
+          />
+          <h5 className="text-muted">Loading dashboard...</h5>
+        </div>
       </Container>
     );
   }
@@ -150,330 +160,101 @@ const Dashboard = () => {
           padding: "20px",
         }}
       >
-        <Container fluid>
-          <Row className="mb-5">
+        <Container fluid className="py-4">
+          <Row className="mb-4">
             <Col>
-              <div
-                className="text-center text-white p-5 rounded-4 shadow-lg position-relative overflow-hidden"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-                  border: "2px solid rgba(255, 255, 255, 0.2)",
-                }}
-              >
-                <div
-                  className="position-absolute top-0 start-0 w-100 h-100"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 50%)",
-                  }}
-                ></div>
-                <div className="position-relative">
-                  <div className="mb-4">
-                    <i
-                      className="fas fa-tachometer-alt"
-                      style={{
-                        fontSize: "4rem",
-                        textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                        filter:
-                          "drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))",
-                      }}
-                    ></i>
+              <Card className="border-0 shadow-sm bg-primary text-white">
+                <Card.Body className="text-center py-5">
+                  <div className="mb-3">
+                    <i className="fas fa-tachometer-alt display-3"></i>
                   </div>
-                  <h1
-                    className="fw-bold mb-3"
-                    style={{ textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)" }}
-                  >
+                  <h1 className="fw-bold mb-3">
                     Welcome back, {user?.name || "User"}!
                   </h1>
-                  <p
-                    className="mb-0 fs-4 opacity-90"
-                    style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.2)" }}
-                  >
+                  <p className="mb-0 fs-5 opacity-75">
                     <i className="fas fa-calendar-day me-2"></i>
                     {moment().format("dddd, MMMM Do YYYY")}
                   </p>
-                </div>
-              </div>
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
 
-          <Row className="mb-5 dashboard-stats g-4">
+          <Row className="mb-4 g-4">
             {isDriver ? (
-              <Col md={6} lg={6}>
-                <Card
-                  className="h-100 border-0 shadow-lg rounded-4 bg-gradient position-relative overflow-hidden"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    transition: "all 0.3s ease",
-                    transform: "translateY(0)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(102, 126, 234, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "";
-                  }}
-                >
-                  <div
-                    className="position-absolute top-0 end-0 opacity-25"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      background:
-                        "radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-                    }}
-                  ></div>
-                  <Card.Body className="text-center text-white p-3 position-relative">
-                    <div className="mb-2">
-                      <i
-                        className="fas fa-clipboard-list"
-                        style={{
-                          fontSize: "2.5rem",
-                          textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                          filter:
-                            "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
-                        }}
-                      ></i>
+              <Col md={6} lg={3}>
+                <Card className="border-0 shadow-sm h-100 bg-primary text-white">
+                  <Card.Body className="text-center p-4">
+                    <div className="mb-3">
+                      <i className="fas fa-clipboard-list display-4"></i>
                     </div>
-                    <h6 className="fw-semibold opacity-90 mb-2 text-uppercase tracking-wider">
+                    <h6 className="text-uppercase fw-semibold opacity-75 mb-2">
                       Total Assigned Trips
                     </h6>
-                    <h2
-                      className="fw-bold mb-0"
-                      style={{
-                        fontSize: "2.5rem",
-                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      {tripsCount}
-                    </h2>
+                    <h2 className="fw-bold mb-0 display-5">{tripsCount}</h2>
                   </Card.Body>
                 </Card>
               </Col>
             ) : (
-              <Col md={6} lg={6}>
-                <Card
-                  className="h-100 border-0 shadow-lg rounded-4 bg-gradient position-relative overflow-hidden"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    transition: "all 0.3s ease",
-                    transform: "translateY(0)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(102, 126, 234, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "";
-                  }}
-                >
-                  <div
-                    className="position-absolute top-0 end-0 opacity-25"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      background:
-                        "radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-                    }}
-                  ></div>
-                  <Card.Body className="text-center text-white p-3 position-relative">
-                    <div className="mb-2">
-                      <i
-                        className="fas fa-route"
-                        style={{
-                          fontSize: "2.5rem",
-                          textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                          filter:
-                            "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
-                        }}
-                      ></i>
+              <Col md={6} lg={3}>
+                <Card className="border-0 shadow-sm h-100 bg-primary text-white">
+                  <Card.Body className="text-center p-4">
+                    <div className="mb-3">
+                      <i className="fas fa-route display-4"></i>
                     </div>
-                    <h6 className="fw-semibold opacity-90 mb-2 text-uppercase tracking-wider">
+                    <h6 className="text-uppercase fw-semibold opacity-75 mb-2">
                       Total Trips
                     </h6>
-                    <h2
-                      className="fw-bold mb-0"
-                      style={{
-                        fontSize: "2.5rem",
-                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
+                    <h2 className="fw-bold mb-0 display-5">
                       {stats?.totalTrips ?? 0}
                     </h2>
                   </Card.Body>
                 </Card>
               </Col>
             )}
-            <Col md={6} lg={6}>
-              <Card
-                className="h-100 border-0 shadow-lg rounded-4 bg-gradient position-relative overflow-hidden"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                  transition: "all 0.3s ease",
-                  transform: "translateY(0)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 20px 40px rgba(240, 147, 251, 0.4)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "";
-                }}
-              >
-                <div
-                  className="position-absolute top-0 end-0 opacity-25"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    background:
-                      "radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-                  }}
-                ></div>
-                <Card.Body className="text-center text-white p-3 position-relative">
-                  <div className="mb-2">
-                    <i
-                      className="fas fa-truck"
-                      style={{
-                        fontSize: "2.5rem",
-                        textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                        filter:
-                          "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
-                      }}
-                    ></i>
-                  </div>
-                  <h6 className="fw-semibold opacity-90 mb-2 text-uppercase tracking-wider">
-                    Total Trucks
-                  </h6>
-                  <h2
-                    className="fw-bold mb-0"
-                    style={{
-                      fontSize: "2.5rem",
-                      textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                    }}
-                  >
-                    {trucksCount}
-                  </h2>
-                </Card.Body>
-              </Card>
-            </Col>
+
             {(isOwner || isAdmin) && (
-              <Col md={6} lg={6}>
-                <Card
-                  className="h-100 border-0 shadow-lg rounded-4 bg-gradient position-relative overflow-hidden"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-                    transition: "all 0.3s ease",
-                    transform: "translateY(0)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(79, 172, 254, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "";
-                  }}
-                >
-                  <div
-                    className="position-absolute top-0 end-0 opacity-25"
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      background:
-                        "radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-                    }}
-                  ></div>
-                  <Card.Body className="text-center text-white p-3 position-relative">
-                    <div className="mb-2">
-                      <i
-                        className="fas fa-users"
-                        style={{
-                          fontSize: "2.5rem",
-                          textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                          filter:
-                            "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
-                        }}
-                      ></i>
+              <Col md={6} lg={3}>
+                <Card className="border-0 shadow-sm h-100 bg-success text-white">
+                  <Card.Body className="text-center p-4">
+                    <div className="mb-3">
+                      <i className="fas fa-truck display-4"></i>
                     </div>
-                    <h6 className="fw-semibold opacity-90 mb-2 text-uppercase tracking-wider">
-                      Total Drivers
+                    <h6 className="text-uppercase fw-semibold opacity-75 mb-2">
+                      Total Trucks
                     </h6>
-                    <h2
-                      className="fw-bold mb-0"
-                      style={{
-                        fontSize: "2.5rem",
-                        textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                      }}
-                    >
-                      {driversCount}
-                    </h2>
+                    <h2 className="fw-bold mb-0 display-5">{trucksCount}</h2>
                   </Card.Body>
                 </Card>
               </Col>
             )}
-            <Col md={6} lg={6}>
-              <Card
-                className="h-100 border-0 shadow-lg rounded-4 bg-gradient position-relative overflow-hidden"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-                  transition: "all 0.3s ease",
-                  transform: "translateY(0)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 20px 40px rgba(250, 112, 154, 0.4)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "";
-                }}
-              >
-                <div
-                  className="position-absolute top-0 end-0 opacity-25"
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    background:
-                      "radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-                  }}
-                ></div>
-                <Card.Body className="text-center text-white p-3 position-relative">
-                  <div className="mb-2">
-                    <i
-                      className="fas fa-play-circle"
-                      style={{
-                        fontSize: "2.5rem",
-                        textShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                        filter:
-                          "drop-shadow(0 0 10px rgba(255, 255, 255, 0.3))",
-                      }}
-                    ></i>
+
+            {(isOwner || isAdmin) && (
+              <Col md={6} lg={3}>
+                <Card className="border-0 shadow-sm h-100 bg-info text-white">
+                  <Card.Body className="text-center p-4">
+                    <div className="mb-3">
+                      <i className="fas fa-users display-4"></i>
+                    </div>
+                    <h6 className="text-uppercase fw-semibold opacity-75 mb-2">
+                      Total Drivers
+                    </h6>
+                    <h2 className="fw-bold mb-0 display-5">{driversCount}</h2>
+                  </Card.Body>
+                </Card>
+              </Col>
+            )}
+
+            <Col md={6} lg={3}>
+              <Card className="border-0 shadow-sm h-100 bg-warning text-white">
+                <Card.Body className="text-center p-4">
+                  <div className="mb-3">
+                    <i className="fas fa-play-circle display-4"></i>
                   </div>
-                  <h6 className="fw-semibold opacity-90 mb-2 text-uppercase tracking-wider">
+                  <h6 className="text-uppercase fw-semibold opacity-75 mb-2">
                     Ongoing Trips
                   </h6>
-                  <h2
-                    className="fw-bold mb-0"
-                    style={{
-                      fontSize: "2.5rem",
-                      textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-                    }}
-                  >
+                  <h2 className="fw-bold mb-0 display-5">
                     {ongoingTripsCount}
                   </h2>
                 </Card.Body>
@@ -481,87 +262,42 @@ const Dashboard = () => {
             </Col>
           </Row>
 
-          <Row className="mb-5">
+          <Row className="mb-4">
             <Col>
-              <div
-                className="p-5 rounded-4 shadow-lg"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.9) 100%)",
-                  border: "1px solid rgba(255, 255, 255, 0.5)",
-                  backdropFilter: "blur(10px)",
-                }}
-              >
-                <div className="text-center mb-4">
-                  <h3 className="fw-bold text-dark mb-2">Quick Actions</h3>
-                  <p className="text-muted mb-0">
-                    Access your recent trips and drive sessions
-                  </p>
-                </div>
-                <Row className="g-4">
-                  <Col md={6} className="text-center">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      onClick={handleOpenTripsModal}
-                      className="px-5 py-4 fw-semibold rounded-pill shadow-lg border-0 position-relative overflow-hidden w-100"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        transition: "all 0.3s ease",
-                        transform: "translateY(0)",
-                        minHeight: "70px",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = "translateY(-5px)";
-                        e.target.style.boxShadow =
-                          "0 15px 30px rgba(102, 126, 234, 0.4)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = "translateY(0)";
-                        e.target.style.boxShadow = "";
-                      }}
-                    >
-                      <FaCar className="me-3" style={{ fontSize: "1.5rem" }} />
-                      <span style={{ fontSize: "1.1rem" }}>
+              <Card className="border-0 shadow-sm">
+                <Card.Body className="p-5">
+                  <div className="text-center mb-4">
+                    <h3 className="fw-bold text-dark mb-2">Quick Actions</h3>
+                    <p className="text-muted mb-0">
+                      Access your recent trips and drive sessions
+                    </p>
+                  </div>
+                  <Row className="g-3">
+                    <Col md={6}>
+                      <Button
+                        variant="primary"
+                        size="lg"
+                        onClick={handleOpenTripsModal}
+                        className="w-100 py-3 fw-semibold d-flex align-items-center justify-content-center"
+                      >
+                        <FaCar className="me-2" />
                         View Recent Trips
-                      </span>
-                    </Button>
-                  </Col>
-                  <Col md={6} className="text-center">
-                    <Button
-                      variant="success"
-                      size="lg"
-                      onClick={handleOpenSessionsModal}
-                      className="px-5 py-4 fw-semibold rounded-pill shadow-lg border-0 position-relative overflow-hidden w-100"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-                        transition: "all 0.3s ease",
-                        transform: "translateY(0)",
-                        minHeight: "70px",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = "translateY(-5px)";
-                        e.target.style.boxShadow =
-                          "0 15px 30px rgba(79, 172, 254, 0.4)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = "translateY(0)";
-                        e.target.style.boxShadow = "";
-                      }}
-                    >
-                      <FaClock
-                        className="me-3"
-                        style={{ fontSize: "1.5rem" }}
-                      />
-                      <span style={{ fontSize: "1.1rem" }}>
+                      </Button>
+                    </Col>
+                    <Col md={6}>
+                      <Button
+                        variant="success"
+                        size="lg"
+                        onClick={handleOpenSessionsModal}
+                        className="w-100 py-3 fw-semibold d-flex align-items-center justify-content-center"
+                      >
+                        <FaClock className="me-2" />
                         View Recent Drive Sessions
-                      </span>
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+                      </Button>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
 
@@ -572,10 +308,7 @@ const Dashboard = () => {
             size="lg"
             scrollable
           >
-            <Modal.Header
-              closeButton
-              className="bg-primary text-white border-0"
-            >
+            <Modal.Header closeButton className="bg-primary text-white">
               <Modal.Title className="fw-bold">
                 <FaCar className="me-2" />
                 Recent Trips
@@ -588,24 +321,27 @@ const Dashboard = () => {
                     className="fas fa-route text-muted mb-3"
                     style={{ fontSize: "3rem" }}
                   ></i>
-                  <div className="text-muted fs-5">No recent trips found.</div>
+                  <h5 className="text-muted">No recent trips found.</h5>
                 </div>
               ) : (
-                <Table striped hover responsive="sm" className="mb-0">
-                  <thead className="bg-light">
+                <Table striped hover responsive className="mb-0">
+                  <thead className="table-light">
                     <tr>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-map-marker-alt me-2"></i>Origin
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-map-marker-alt me-2 text-muted"></i>
+                        Origin
                       </th>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-flag-checkered me-2"></i>
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-flag-checkered me-2 text-muted"></i>
                         Destination
                       </th>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-info-circle me-2"></i>Status
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-info-circle me-2 text-muted"></i>
+                        Status
                       </th>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-calendar me-2"></i>Start Date
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-calendar me-2 text-muted"></i>Start
+                        Date
                       </th>
                     </tr>
                   </thead>
@@ -625,7 +361,7 @@ const Dashboard = () => {
                                 ? "success"
                                 : "danger"
                             }
-                            className="px-3 py-2 rounded-pill fw-semibold"
+                            className="px-3 py-2 fw-semibold"
                           >
                             {trip.status}
                           </Badge>
@@ -639,12 +375,8 @@ const Dashboard = () => {
                 </Table>
               )}
             </Modal.Body>
-            <Modal.Footer className="border-0">
-              <Button
-                variant="outline-secondary"
-                onClick={handleCloseModal}
-                className="rounded-pill px-4"
-              >
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
                 Close
               </Button>
             </Modal.Footer>
@@ -657,10 +389,7 @@ const Dashboard = () => {
             size="lg"
             scrollable
           >
-            <Modal.Header
-              closeButton
-              className="bg-success text-white border-0"
-            >
+            <Modal.Header closeButton className="bg-success text-white">
               <Modal.Title className="fw-bold">
                 <FaClock className="me-2" />
                 Recent Drive Sessions
@@ -673,22 +402,20 @@ const Dashboard = () => {
                     className="fas fa-clock text-muted mb-3"
                     style={{ fontSize: "3rem" }}
                   ></i>
-                  <div className="text-muted fs-5">
-                    No drive sessions found.
-                  </div>
+                  <h5 className="text-muted">No drive sessions found.</h5>
                 </div>
               ) : (
-                <Table striped hover responsive="sm" className="mb-0">
-                  <thead className="bg-light">
+                <Table striped hover responsive className="mb-0">
+                  <thead className="table-light">
                     <tr>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-route me-2"></i>Trip
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-route me-2 text-muted"></i>Trip
                       </th>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-play me-2"></i>Start
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-play me-2 text-muted"></i>Start
                       </th>
-                      <th className="fw-semibold text-muted py-3">
-                        <i className="fas fa-stop me-2"></i>End
+                      <th className="fw-semibold py-3">
+                        <i className="fas fa-stop me-2 text-muted"></i>End
                       </th>
                     </tr>
                   </thead>
@@ -710,10 +437,7 @@ const Dashboard = () => {
                               "MMM DD, YYYY HH:mm"
                             )
                           ) : (
-                            <Badge
-                              bg="info"
-                              className="px-3 py-2 rounded-pill fw-semibold"
-                            >
+                            <Badge bg="info" className="px-3 py-2 fw-semibold">
                               <i className="fas fa-spinner fa-spin me-1"></i>
                               Ongoing
                             </Badge>
@@ -725,12 +449,8 @@ const Dashboard = () => {
                 </Table>
               )}
             </Modal.Body>
-            <Modal.Footer className="border-0">
-              <Button
-                variant="outline-secondary"
-                onClick={handleCloseModal}
-                className="rounded-pill px-4"
-              >
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
                 Close
               </Button>
             </Modal.Footer>

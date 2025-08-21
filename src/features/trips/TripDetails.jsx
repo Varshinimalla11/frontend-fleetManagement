@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+"use client";
+
+import { useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import moment from "moment";
 import {
   useGetTripByIdQuery,
@@ -21,7 +23,6 @@ import {
 import { useGetNotificationsQuery } from "../../api/notificationsApi";
 import { useAuth } from "../../contexts/AuthContext";
 import {
-  Container,
   Row,
   Col,
   Card,
@@ -31,7 +32,32 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faRoute,
+  faMapMarkerAlt,
+  faRoad,
+  faWeightHanging,
+  faTruck,
+  faUser,
+  faPhone,
+  faIdCard,
+  faIdBadge,
+  faHistory,
+  faClock,
+  faFlag,
+  faInfo,
+  faCogs,
+  faStop,
+  faPlay,
+  faFlagCheckered,
+  faGasPump,
+  faCheck,
+  faTimes,
+  faCalendar,
+  faUserSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 export default function TripDetails() {
   const { id } = useParams();
   const { user } = useAuth();
@@ -229,19 +255,30 @@ export default function TripDetails() {
         >
           <Row className="mb-4">
             <Col md={7}>
-              <Card>
-                <Card.Header>
-                  <h4>
-                    <Badge bg="secondary" className="me-2">
+              <Card className="shadow-sm border-0">
+                <Card.Header
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white",
+                  }}
+                >
+                  <h4 className="mb-0 fw-bold">
+                    <Badge bg="light" text="dark" className="me-2">
+                      <FontAwesomeIcon icon={faRoute} className="me-1" />
                       Trip
                     </Badge>
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      className="me-2 text-warning"
+                    />
                     {trip.start_city} <strong>→</strong> {trip.end_city}
                   </h4>
                 </Card.Header>
-                <Card.Body>
-                  <Row className="mb-2">
+                <Card.Body className="p-4">
+                  <Row className="mb-3">
                     <Col>
-                      <span>Status: </span>
+                      <span className="fw-semibold">Status: </span>
                       <Badge
                         bg={
                           trip.status === "scheduled"
@@ -252,37 +289,78 @@ export default function TripDetails() {
                             ? "success"
                             : "danger"
                         }
+                        className="px-3 py-2 fs-6"
                       >
+                        <FontAwesomeIcon
+                          icon={
+                            trip.status === "scheduled"
+                              ? faClock
+                              : trip.status === "ongoing"
+                              ? faPlay
+                              : trip.status === "completed"
+                              ? faCheck
+                              : faTimes
+                          }
+                          className="me-1"
+                        />
                         {trip.status}
                       </Badge>
                     </Col>
                     <Col>
-                      Created:{" "}
+                      <FontAwesomeIcon
+                        icon={faCalendar}
+                        className="text-muted me-1"
+                      />
+                      <span className="text-muted">Created: </span>
                       {moment(trip.createdAt).format("MMM DD YYYY, HH:mm")}
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faRoad}
+                          className="text-info me-2"
+                        />
                         <strong>Total KM planned:</strong> {trip.total_km}
                       </div>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faRoute}
+                          className="text-warning me-2"
+                        />
                         <strong>KM Remaining:</strong>{" "}
                         {trip.remaining_km_in_trip}
                       </div>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faGasPump}
+                          className="text-success me-2"
+                        />
                         <strong>Fuel Start:</strong> {trip.fuel_start}L
                       </div>
                       <div>
+                        <FontAwesomeIcon
+                          icon={faGasPump}
+                          className="text-danger me-2"
+                        />
                         <strong>Fuel End:</strong> {trip.fuel_end ?? "-"}
                       </div>
                     </Col>
                     <Col>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faWeightHanging}
+                          className="text-primary me-2"
+                        />
                         <strong>Cargo Weight:</strong> {trip.cargo_weight}kg
                       </div>
                       {trip.truck_id && (
                         <div>
+                          <FontAwesomeIcon
+                            icon={faTruck}
+                            className="text-info me-2"
+                          />
                           <strong>Truck:</strong> {trip.truck_id.plate_number}
                         </div>
                       )}
@@ -292,34 +370,62 @@ export default function TripDetails() {
               </Card>
             </Col>
             <Col md={5}>
-              <Card>
-                <Card.Header>
-                  <h5>
-                    <Badge bg="warning" text="dark">
-                      Driver
-                    </Badge>
+              <Card className="shadow-sm border-0">
+                <Card.Header
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #ffc107 0%, #ff8c00 100%)",
+                    color: "white",
+                  }}
+                >
+                  <h5 className="mb-0 fw-bold">
+                    <FontAwesomeIcon icon={faUser} className="me-2" />
+                    Driver Information
                   </h5>
                 </Card.Header>
-                <Card.Body>
+                <Card.Body className="p-4">
                   {trip.driver_id ? (
                     <>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faUser}
+                          className="text-primary me-2"
+                        />
                         <strong>Name:</strong> {trip.driver_id.name}
                       </div>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faPhone}
+                          className="text-success me-2"
+                        />
                         <strong>Phone:</strong> {trip.driver_id.phone}
                       </div>
-                      <div>
+                      <div className="mb-2">
+                        <FontAwesomeIcon
+                          icon={faIdCard}
+                          className="text-info me-2"
+                        />
                         <strong>Aadhaar:</strong>{" "}
                         {trip.driver_id.aadhar_number ?? "-"}
                       </div>
                       <div>
+                        <FontAwesomeIcon
+                          icon={faIdBadge}
+                          className="text-warning me-2"
+                        />
                         <strong>License:</strong>{" "}
                         {trip.driver_id.license_number ?? "-"}
                       </div>
                     </>
                   ) : (
-                    <div className="text-muted">No driver assigned</div>
+                    <div className="text-muted text-center py-3">
+                      <FontAwesomeIcon
+                        icon={faUserSlash}
+                        className="fa-2x mb-2"
+                        style={{ opacity: 0.3 }}
+                      />
+                      <div>No driver assigned</div>
+                    </div>
                   )}
                 </Card.Body>
               </Card>
@@ -327,21 +433,64 @@ export default function TripDetails() {
           </Row>
 
           {/* Timeline */}
-          <Card className="mb-4">
-            <Card.Header>
-              <h5>Trip Timeline</h5>
+          <Card className="mb-4 shadow-sm border-0">
+            <Card.Header
+              style={{
+                background: "linear-gradient(135deg, #28a745 0%, #20c997 100%)",
+                color: "white",
+              }}
+            >
+              <h5 className="mb-0 fw-bold">
+                <FontAwesomeIcon icon={faHistory} className="me-2" />
+                Trip Timeline
+              </h5>
             </Card.Header>
-            <Card.Body>
+            <Card.Body className="p-0">
               {timelineEvents.length === 0 ? (
-                <div className="text-muted">No events yet.</div>
+                <div className="text-center py-5">
+                  <FontAwesomeIcon
+                    icon={faClock}
+                    className="fa-3x text-muted mb-3"
+                    style={{ opacity: 0.3 }}
+                  />
+                  <div className="text-muted">No events yet.</div>
+                </div>
               ) : (
-                <Table size="sm" striped bordered responsive>
-                  <thead>
+                <Table hover responsive className="mb-0">
+                  <thead
+                    style={{
+                      background: "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+                    }}
+                  >
                     <tr>
-                      <th>Time</th>
-                      <th>Event</th>
-                      <th>Details</th>
-                      <th>Actions</th>
+                      <th className="fw-semibold">
+                        <FontAwesomeIcon
+                          icon={faClock}
+                          className="text-primary me-1"
+                        />
+                        Time
+                      </th>
+                      <th className="fw-semibold">
+                        <FontAwesomeIcon
+                          icon={faFlag}
+                          className="text-success me-1"
+                        />
+                        Event
+                      </th>
+                      <th className="fw-semibold">
+                        <FontAwesomeIcon
+                          icon={faInfo}
+                          className="text-info me-1"
+                        />
+                        Details
+                      </th>
+                      <th className="fw-semibold">
+                        <FontAwesomeIcon
+                          icon={faCogs}
+                          className="text-warning me-1"
+                        />
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -360,7 +509,9 @@ export default function TripDetails() {
                               variant="success"
                               size="sm"
                               onClick={() => handleEndDriveSession(ev.data._id)}
+                              className="fw-semibold"
                             >
+                              <FontAwesomeIcon icon={faStop} className="me-1" />
                               End Drive Session
                             </Button>
                           );
@@ -371,7 +522,9 @@ export default function TripDetails() {
                               variant="primary"
                               size="sm"
                               onClick={() => handleEndRest(ev.data._id)}
+                              className="fw-semibold"
                             >
+                              <FontAwesomeIcon icon={faPlay} className="me-1" />
                               End Rest & Resume Drive
                             </Button>
                           );
@@ -427,13 +580,18 @@ export default function TripDetails() {
           <Row>
             <Col>
               {isDriver && (
-                <>
+                <div className="text-center">
                   {trip.status === "scheduled" && (
                     <Button
                       variant="success"
                       onClick={handleStartTrip}
-                      className="me-2"
+                      className="me-3 px-4 py-2 fw-semibold"
+                      style={{
+                        background: "linear-gradient(45deg, #28a745, #20c997)",
+                        border: "none",
+                      }}
                     >
+                      <FontAwesomeIcon icon={faPlay} className="me-2" />
                       Start Trip
                     </Button>
                   )}
@@ -442,16 +600,36 @@ export default function TripDetails() {
                       <Button
                         variant="warning"
                         onClick={handleCompleteTrip}
-                        className="me-2"
+                        className="me-3 px-4 py-2 fw-semibold"
+                        style={{
+                          background:
+                            "linear-gradient(45deg, #ffc107, #ff8c00)",
+                          border: "none",
+                          color: "white",
+                        }}
                       >
+                        <FontAwesomeIcon
+                          icon={faFlagCheckered}
+                          className="me-2"
+                        />
                         Complete Trip
                       </Button>
-                      <Button variant="info" onClick={handleLogRefuel}>
+                      <Button
+                        variant="info"
+                        onClick={handleLogRefuel}
+                        className="px-4 py-2 fw-semibold"
+                        style={{
+                          background:
+                            "linear-gradient(45deg, #17a2b8, #138496)",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faGasPump} className="me-2" />
                         Log Refuel
                       </Button>
                     </>
                   )}
-                </>
+                </div>
               )}
             </Col>
           </Row>
