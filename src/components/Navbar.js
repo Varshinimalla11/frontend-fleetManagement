@@ -16,6 +16,7 @@ import {
 } from "../api/notificationsApi";
 import moment from "moment";
 import { useGetDriversQuery } from "../api/authApi";
+import FleetFlowLogo from "../assets/FleetFlowLogoDesign.png";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -67,12 +68,12 @@ const Navbar = () => {
     logout();
     navigate("/");
   };
- return (
+  return (
     <BootstrapNavbar
       className="shadow-sm"
       style={{
-        background: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
-        borderBottom: "3px solid #0d6efd",
+        background: "linear-gradient(135deg, #c9d3e6ff 0%, #2a5298 100%)",
+        borderBottom: "3px solid #a0c1f7ff",
       }}
       variant="dark"
       expand="lg"
@@ -93,8 +94,21 @@ const Navbar = () => {
           onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
           onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
         >
-          <i className="fas fa-truck me-2 text-warning"></i>
-          Fleet Manager
+          <img
+            src={FleetFlowLogo}
+            alt="FleetFlow Logo"
+            style={{
+              height: "40px",
+              width: "auto",
+              objectFit: "contain",
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+              transition: "transform 0.3s ease",
+              marginRight: "0.5rem",
+            }}
+            onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+          />
+          FleetFlow
         </BootstrapNavbar.Brand>
 
         <BootstrapNavbar.Toggle
@@ -120,12 +134,12 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-truck me-2 text-info"></i> Trucks
@@ -140,12 +154,12 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-route me-2 text-success"></i> Trips
@@ -160,15 +174,16 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
-                  <i className="fas fa-user-plus me-2 text-warning"></i> Invite Driver
+                  <i className="fas fa-user-plus me-2 text-warning"></i> Invite
+                  Driver
                 </Nav.Link>
 
                 <Nav.Link
@@ -180,12 +195,12 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-users me-2 text-primary"></i> My Drivers
@@ -203,12 +218,12 @@ const Navbar = () => {
                   textDecoration: "none",
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                  e.target.style.transform = "translateY(-2px)"
+                  e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                  e.target.style.transform = "translateY(-2px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "transparent"
-                  e.target.style.transform = "translateY(0)"
+                  e.target.style.backgroundColor = "transparent";
+                  e.target.style.transform = "translateY(0)";
                 }}
               >
                 <i className="fas fa-road me-2 text-success"></i> My Trips
@@ -223,8 +238,8 @@ const Navbar = () => {
                   as={Link}
                   to="/notifications"
                   onClick={(e) => {
-                    onNotificationsClick(e)
-                    closeNavbar()
+                    onNotificationsClick(e);
+                    closeNavbar();
                   }}
                   className="d-flex align-items-center position-relative mx-2 px-3 py-2 rounded-pill text-white fw-medium"
                   style={{
@@ -233,12 +248,12 @@ const Navbar = () => {
                   }}
                   title="Notifications"
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-bell me-2 text-warning"></i>
@@ -278,21 +293,27 @@ const Navbar = () => {
                     "--bs-dropdown-border-radius": "10px",
                   }}
                 >
-                  <NavDropdown.Item disabled className="fw-bold text-muted" style={{ backgroundColor: "#f8f9fa" }}>
+                  <NavDropdown.Item
+                    disabled
+                    className="fw-bold text-muted"
+                    style={{ backgroundColor: "#f8f9fa" }}
+                  >
                     <i className="fas fa-id-badge me-2"></i>
                     Role: <span className="text-primary">{user.role}</span>
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item
                     onClick={() => {
-                      handleLogout()
-                      closeNavbar()
+                      handleLogout();
+                      closeNavbar();
                     }}
                     className="text-danger fw-medium"
                     style={{
                       transition: "all 0.3s ease",
                     }}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = "#fff5f5")}
+                    onMouseEnter={(e) =>
+                      (e.target.style.backgroundColor = "#fff5f5")
+                    }
                   >
                     <i className="fas fa-sign-out-alt me-2"></i>
                     Logout
@@ -311,12 +332,12 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-sign-in-alt me-2 text-success"></i> Login
@@ -332,12 +353,12 @@ const Navbar = () => {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)"
-                    e.target.style.transform = "translateY(-2px)"
+                    e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.target.style.transform = "translateY(-2px)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "transparent"
-                    e.target.style.transform = "translateY(0)"
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 >
                   <i className="fas fa-user-plus me-2 text-info"></i> Register
@@ -348,7 +369,7 @@ const Navbar = () => {
         </BootstrapNavbar.Collapse>
       </Container>
     </BootstrapNavbar>
-  )
-}
+  );
+};
 
 export default Navbar;

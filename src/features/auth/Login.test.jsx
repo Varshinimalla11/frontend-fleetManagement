@@ -1,11 +1,12 @@
-// src/features/auth/Login.test.jsx
 import "@testing-library/jest-dom";
-
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Login from "./Login";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "../../app/store"; // <-- corrected import
 
+// Mock useAuth
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: () => ({
     login: jest
@@ -14,12 +15,34 @@ jest.mock("../../contexts/AuthContext", () => ({
   }),
 }));
 
+// Mock useNavigate and useLocation
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => jest.fn(),
+  useLocation: () => ({ state: { from: { pathname: "/dashboard" } } }),
+}));
+
+// Mock toast
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
+
+// Mock useForgotPasswordMutation
+jest.mock("../../api/authApi", () => ({
+  useForgotPasswordMutation: () => [jest.fn()],
+}));
+
 describe("Login component", () => {
   it("renders login form and handles submit", async () => {
     render(
-      <BrowserRouter>
-        <Login />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Login />
+        </BrowserRouter>
+      </Provider>
     );
 
     fireEvent.change(screen.getByLabelText(/email/i), {
@@ -29,8 +52,9 @@ describe("Login component", () => {
       target: { value: "password" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    expect(await screen.findByText(/logging in/i)).toBeInTheDocument();
+    // Wait for loading spinner text
+    expect(await screen.findByText(/signing in/i)).toBeInTheDocument();
   });
 });

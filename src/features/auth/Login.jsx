@@ -47,12 +47,20 @@ const Login = () => {
         toast.success("✅ Login successful");
         navigate(from, { replace: true });
       } else {
-        throw new Error("Login failed");
+        toast.error("Login failed, please try again");
       }
     } catch (err) {
       console.error("Login error details:", err);
 
-      const errorMessage = err?.data?.message || "Invalid credentials";
+      let errorMessage = "Credentials entered are incorrect";
+      if (err?.data?.message && typeof err.data.message === "string") {
+        errorMessage = err.data.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      } else if (err?.message && typeof err.message === "string") {
+        errorMessage = err.message;
+      }
+
       setError(errorMessage);
       toast.error(errorMessage);
 
@@ -60,8 +68,8 @@ const Login = () => {
       const shouldReload =
         err?.status === 400 || // Bad request
         err?.status === 401 || // Unauthorized
-        err?.data?.message?.includes("Invalid") || // Invalid credentials message
-        err?.data?.message?.includes("invalid"); // Invalid credentials message
+        (err?.data?.message && // Invalid credentials message
+          err?.data?.message?.includes("invalid")); // Invalid credentials message
 
       if (shouldReload) {
         setTimeout(() => {
@@ -252,7 +260,7 @@ const Login = () => {
             <div className="text-center">
               <span className="text-muted">New to our platform? </span>
               <Link
-                to="/register"
+                to="/send-otp"
                 className="text-decoration-none fw-semibold text-primary"
               >
                 <i className="fas fa-user-plus me-1"></i>

@@ -6,6 +6,7 @@ import {
   useLoginMutation,
 } from "../api/authApi";
 import { disconnectSocket } from "../utils/socket";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -20,7 +21,9 @@ export const AuthProvider = ({ children }) => {
   const {
     data: currentUser,
     isLoading: isFetchingUser,
-    refetch,isFetching,isUninitialized
+    refetch,
+    isFetching,
+    isUninitialized,
   } = useGetCurrentUserQuery(undefined, {
     skip: !token, // only skip if no token
   });
@@ -55,13 +58,13 @@ export const AuthProvider = ({ children }) => {
       setToken(res.token);
       if (res.user) setUser(res.user);
       // Refetch current user to ensure latest details
-       if (!isUninitialized) {
-      await refetch();
-    }
+      if (!isUninitialized) {
+        await refetch();
+      }
       return res;
     } catch (error) {
       console.error("Login error:", error);
-      throw error;
+      toast.error(`Login failed: ${error.data}`);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +90,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     disconnectSocket();
   };
-const isAuthenticated = !!token && !!user;
+  const isAuthenticated = !!token && !!user;
   return (
     <AuthContext.Provider
       value={{

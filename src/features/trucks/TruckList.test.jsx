@@ -2,9 +2,11 @@
 import "@testing-library/jest-dom";
 
 import React from "react";
+import { store } from "../../app/store";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import TruckList from "./TruckList";
 import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 jest.mock("../../api/trucksApi", () => ({
   useGetTrucksQuery: jest.fn(),
@@ -14,6 +16,7 @@ jest.mock("../../api/trucksApi", () => ({
 import { useGetTrucksQuery, useDeleteTruckMutation } from "../../api/trucksApi";
 
 describe("TruckList component", () => {
+  const mockUser = { name: "Test User", role: "admin" };
   const mockTrucks = [
     {
       _id: "1",
@@ -28,8 +31,21 @@ describe("TruckList component", () => {
       mileage_factor: 5000,
     },
   ];
+  const mockDeleteTruck = {
+    _id: "1",
+    plate_number: "ABC123",
+    condition: "active",
+    mileage_factor: 10000,
+  };
 
-  const mockDeleteTruck = jest.fn();
+  const renderWithProviders = (ui) =>
+    render(
+      <Provider store={store}>
+        <AuthProvider>
+          <BrowserRouter>{ui}</BrowserRouter>
+        </AuthProvider>
+      </Provider>
+    );
 
   beforeEach(() => {
     useGetTrucksQuery.mockReturnValue({
@@ -44,21 +60,14 @@ describe("TruckList component", () => {
   });
 
   it("renders trucks list", () => {
-    render(
-      <BrowserRouter>
-        <TruckList />
-      </BrowserRouter>
-    );
+    renderWithProviders(<TruckList />);
+
     expect(screen.getByText("ABC123")).toBeInTheDocument();
     expect(screen.getByText("XYZ789")).toBeInTheDocument();
   });
 
   it("handles delete truck", async () => {
-    render(
-      <BrowserRouter>
-        <TruckList />
-      </BrowserRouter>
-    );
+    renderWithProviders(<TruckList />);
 
     fireEvent.click(screen.getAllByRole("button", { name: /delete/i })[0]); // Open delete modal
     fireEvent.click(screen.getByText(/confirm/i)); // Confirm delete
