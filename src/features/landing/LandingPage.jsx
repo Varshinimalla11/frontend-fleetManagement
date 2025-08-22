@@ -33,7 +33,7 @@ const LandingPage = () => {
           }}
         >
           <i className="fas fa-truck me-3" style={{ color: "#4CAF50" }}></i>
-          Truck Fleet Management
+          Fleet Flow
         </h1>
         <p
           className="text-white mb-4 fs-5 fw-light"

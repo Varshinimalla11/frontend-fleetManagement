@@ -183,7 +183,7 @@ const Dashboard = () => {
           <Row className="mb-4 g-4">
             {isDriver ? (
               <Col md={6} lg={3}>
-                <Card className="border-0 shadow-sm h-100 glass-card text-white">
+                <Card className="border-0 shadow-sm h-100 bg-primary text-white">
                   <Card.Body className="text-center p-4">
                     <div className="mb-3">
                       <i className="fas fa-clipboard-list display-4"></i>
