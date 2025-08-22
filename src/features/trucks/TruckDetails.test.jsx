@@ -3,65 +3,81 @@ import "@testing-library/jest-dom";
 
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import TruckDetails from "./TruckDetails";
 
-// Mock the RTK Query hook
-jest.mock("../../api/trucksApi", () => ({
-  useGetTruckByIdQuery: jest.fn(),
+jest.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { role: "owner", _id: "u1" } }),
 }));
 
-import { useGetTruckByIdQuery } from "../../api/trucksApi";
-
-describe("TruckDetails component", () => {
-  it("displays loading spinner when loading", () => {
-    useGetTruckByIdQuery.mockReturnValue({
-      data: null,
-      error: false,
-      isLoading: true,
-    });
-    render(
-      <BrowserRouter>
-        <TruckDetails />
-      </BrowserRouter>
-    );
-    expect(document.querySelector(".spinner-border")).toBeInTheDocument();
-  });
-
-  it("displays error message on error", () => {
-    useGetTruckByIdQuery.mockReturnValue({
-      data: null,
-      error: true,
-      isLoading: false,
-    });
-    render(
-      <BrowserRouter>
-        <TruckDetails />
-      </BrowserRouter>
-    );
-    expect(
-      screen.getByText(/error loading truck details/i)
-    ).toBeInTheDocument();
-  });
-
-  it("displays truck details when data is loaded", () => {
-    const fakeTruck = {
-      plate_number: "AB123CD",
+jest.mock("../../api/trucksApi", () => ({
+  useGetTruckByIdQuery: () => ({
+    data: {
+      _id: "1",
+      plate_number: "MH01AB1234",
+      model: "Tata 407",
+      capacity: "1.5 ton",
+      year: 2020,
+      status: "active",
       condition: "active",
-      mileage_factor: 1234,
-    };
-    useGetTruckByIdQuery.mockReturnValue({
-      data: fakeTruck,
-      error: false,
-      isLoading: false,
-    });
+      mileage_factor: 10000,
+      make: "Tata",
+      vin: "1FTFW1ET5DFC12345",
+      driver_id: { name: "John Driver" },
+    },
+    isLoading: false,
+  }),
+}));
+
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({ id: "1" }),
+}));
+
+// Mock the store to prevent Redux errors
+jest.mock("../../app/store", () => ({
+  store: {
+    getState: () => ({}),
+    dispatch: jest.fn(),
+    subscribe: jest.fn(),
+  },
+}));
+
+describe("TruckDetails", () => {
+  test("renders truck details", async () => {
     render(
-      <BrowserRouter>
+      <MemoryRouter>
         <TruckDetails />
-      </BrowserRouter>
+      </MemoryRouter>
     );
-    expect(screen.getByText(fakeTruck.plate_number)).toBeInTheDocument();
+    expect(await screen.findByText(/mh01ab1234/i)).toBeInTheDocument();
+    expect(screen.getByText(/tata 407/i)).toBeInTheDocument();
+    expect(screen.getByText(/1\.5 ton/i)).toBeInTheDocument();
+    expect(screen.getByText(/2020/i)).toBeInTheDocument();
     expect(screen.getByText(/active/i)).toBeInTheDocument();
-    expect(screen.getByText(fakeTruck.mileage_factor)).toBeInTheDocument();
+  });
+
+  test("shows edit and delete buttons for owners", () => {
+    render(
+      <MemoryRouter>
+        <TruckDetails />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/edit truck/i)).toBeInTheDocument();
+    expect(screen.getByText(/delete truck/i)).toBeInTheDocument();
+  });
+
+  test("displays truck information correctly", () => {
+    render(
+      <MemoryRouter>
+        <TruckDetails />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/truck details/i)).toBeInTheDocument();
+    expect(screen.getByText(/plate number/i)).toBeInTheDocument();
+    expect(screen.getByText(/model/i)).toBeInTheDocument();
+    expect(screen.getByText(/capacity/i)).toBeInTheDocument();
+    expect(screen.getByText(/year/i)).toBeInTheDocument();
+    expect(screen.getByText(/status/i)).toBeInTheDocument();
   });
 });

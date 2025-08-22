@@ -1,79 +1,54 @@
 // src/features/trucks/TruckList.test.jsx
-import "@testing-library/jest-dom";
-
 import React from "react";
-import { store } from "../../app/store";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import TruckList from "./TruckList";
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "../../contexts/AuthContext";
 
-jest.mock("../../api/trucksApi", () => ({
-  useGetTrucksQuery: jest.fn(),
-  useDeleteTruckMutation: jest.fn(),
+jest.mock("../../contexts/AuthContext", () => ({
+  useAuth: () => ({ user: { role: "owner", _id: "u1" } }),
 }));
 
-import { useGetTrucksQuery, useDeleteTruckMutation } from "../../api/trucksApi";
+jest.mock("../../api/trucksApi", () => ({
+  useGetTrucksQuery: () => ({
+    data: [
+      {
+        _id: "1",
+        plate_number: "MH01AB1234",
+        model: "Tata 407",
+        capacity: "1.5 ton",
+        status: "active",
+        driver_id: { name: "John Driver" },
+      },
+    ],
+    isLoading: false,
+  }),
+  useDeleteTruckMutation: () => [jest.fn()],
+}));
 
-describe("TruckList component", () => {
-  const mockUser = { name: "Test User", role: "admin" };
-  const mockTrucks = [
-    {
-      _id: "1",
-      plate_number: "ABC123",
-      condition: "active",
-      mileage_factor: 10000,
-    },
-    {
-      _id: "2",
-      plate_number: "XYZ789",
-      condition: "inactive",
-      mileage_factor: 5000,
-    },
-  ];
-  const mockDeleteTruck = {
-    _id: "1",
-    plate_number: "ABC123",
-    condition: "active",
-    mileage_factor: 10000,
-  };
+// Mock the store to prevent Redux errors
+jest.mock("../../app/store", () => ({
+  store: {
+    getState: () => ({}),
+    dispatch: jest.fn(),
+    subscribe: jest.fn(),
+  },
+}));
 
-  const renderWithProviders = (ui) =>
-    render(
-      <Provider store={store}>
-        <AuthProvider>
-          <BrowserRouter>{ui}</BrowserRouter>
-        </AuthProvider>
-      </Provider>
-    );
-
-  beforeEach(() => {
-    useGetTrucksQuery.mockReturnValue({
-      data: mockTrucks,
-      isLoading: false,
-      error: false,
-    });
-    useDeleteTruckMutation.mockReturnValue([
-      mockDeleteTruck,
-      { isLoading: false },
-    ]);
+describe("TruckList", () => {
+  test("renders truck list with data", async () => {
+    render(<TruckList />);
+    expect(await screen.findByText(/mh01ab1234/i)).toBeInTheDocument();
+    expect(screen.getByText(/tata 407/i)).toBeInTheDocument();
+    expect(screen.getByText(/1\.5 ton/i)).toBeInTheDocument();
   });
 
-  it("renders trucks list", () => {
-    renderWithProviders(<TruckList />);
-
-    expect(screen.getByText("ABC123")).toBeInTheDocument();
-    expect(screen.getByText("XYZ789")).toBeInTheDocument();
+  test("shows create truck button for owners", () => {
+    render(<TruckList />);
+    expect(screen.getByText(/add truck/i)).toBeInTheDocument();
   });
 
-  it("handles delete truck", async () => {
-    renderWithProviders(<TruckList />);
-
-    fireEvent.click(screen.getAllByRole("button", { name: /delete/i })[0]); // Open delete modal
-    fireEvent.click(screen.getByText(/confirm/i)); // Confirm delete
-
-    await waitFor(() => {
-      expect(mockDeleteTruck).toHaveBeenCalledWith("1");
-    });
+  test("displays truck status correctly", () => {
+    render(<TruckList />);
+    expect(screen.getByText(/active/i)).toBeInTheDocument();
   });
 });

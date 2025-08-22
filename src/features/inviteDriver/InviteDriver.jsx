@@ -195,7 +195,7 @@ const InviteDriver = () => {
         </Card.Body>
       </Card>
 
-      <style jsx>{`
+      <style>{`
         .form-control-enhanced:focus {
           box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
           border-color: #667eea !important;
