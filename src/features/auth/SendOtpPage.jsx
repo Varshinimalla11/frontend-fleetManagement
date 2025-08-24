@@ -8,11 +8,17 @@ import "font-awesome/css/font-awesome.min.css";
 
 const SendOtpPage = () => {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [sendOtp, { isLoading }] = useSendOtpMutation();
   const navigate = useNavigate();
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+    setError("");
     try {
       await sendOtp({ email }).unwrap();
       toast.success("OTP sent to your email!");
@@ -72,6 +78,11 @@ const SendOtpPage = () => {
                 required
                 disabled={isLoading}
               />
+              {error && (
+                <div className="text-danger mt-2" data-testid="email-error">
+                  {error}
+                </div>
+              )}
             </div>
 
             <button

@@ -5,7 +5,7 @@ import {
   useGetRefuelEventsByTripQuery,
   useCreateRefuelEventMutation,
   useDeleteRefuelEventMutation,
-} from "./refuelEventsApi";
+} from "../../api/refuelEventsApi";
 import {
   Table,
   Button,

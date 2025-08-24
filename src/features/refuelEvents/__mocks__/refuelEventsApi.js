@@ -1,0 +1,2 @@
+export const useGetRefuelEventsByTripQuery = jest.fn(() => ({ data: [], isLoading: false, refetch: jest.fn() }));
+export const useLogRefuelEventMutation = jest.fn(() => [jest.fn(), { isLoading: false }]);

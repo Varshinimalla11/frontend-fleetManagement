@@ -13,9 +13,55 @@ global.localStorage = localStorageMock;
 
 // Mock API calls
 jest.mock("../api/authApi", () => ({
-  useLoginMutation: () => [jest.fn(), { isLoading: false }],
-  useRegisterMutation: () => [jest.fn(), { isLoading: false }],
+  useLoginMutation: () => [
+    () => ({
+      unwrap: async () => ({
+        token: "mock-token",
+        user: { name: "Test User", email: "test@example.com" },
+      }),
+    }),
+    { isLoading: false },
+  ],
+  useRegisterMutation: () => [
+    () => ({
+      unwrap: async () => ({
+        user: { name: "Test", email: "test@example.com" },
+      }),
+    }),
+    { isLoading: false },
+  ],
   useLogoutMutation: () => [jest.fn(), { isLoading: false }],
+  // Stable reference for user data to prevent infinite update loop
+  _mockUserData: undefined,
+  useGetCurrentUserQuery: (_arg, { skip } = {}) => {
+    const token = global.localStorage.getItem("token");
+    if (!token || skip) {
+      return {
+        data: null,
+        isLoading: false,
+        refetch: jest.fn(),
+        isFetching: false,
+        isUninitialized: true,
+      };
+    }
+    if (!jest.requireActual("../api/authApi")._mockUserData) {
+      try {
+        const userStr = global.localStorage.getItem("user");
+        jest.requireActual("../api/authApi")._mockUserData = userStr
+          ? JSON.parse(userStr)
+          : null;
+      } catch {
+        jest.requireActual("../api/authApi")._mockUserData = null;
+      }
+    }
+    return {
+      data: jest.requireActual("../api/authApi")._mockUserData,
+      isLoading: false,
+      refetch: jest.fn(),
+      isFetching: false,
+      isUninitialized: false,
+    };
+  },
 }));
 
 // Mock the store to prevent Redux errors
@@ -80,7 +126,14 @@ describe("AuthContext", () => {
 
   test("loads user from localStorage on mount", () => {
     const mockUser = { name: "Test User", email: "test@example.com" };
-    localStorageMock.getItem.mockReturnValue(JSON.stringify(mockUser));
+    localStorageMock.getItem.mockImplementation((key) => {
+      if (key === "token") return "mock-token";
+      if (key === "user") return JSON.stringify(mockUser);
+      return null;
+    });
+    // Set user in localStorage before rendering
+    global.localStorage.setItem("user", JSON.stringify(mockUser));
+    global.localStorage.setItem("token", "mock-token");
 
     render(
       <AuthProvider>

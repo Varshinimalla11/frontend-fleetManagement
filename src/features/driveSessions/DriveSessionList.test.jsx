@@ -16,22 +16,13 @@ jest.mock("../../api/driveSessionsApi", () => ({
     ],
     isLoading: false,
   }),
-  useStartDriveSessionMutation: () => [jest.fn()],
-  useEndDriveSessionMutation: () => [jest.fn()],
+  useStartDriveSessionMutation: () => [jest.fn(), { isLoading: false }],
+  useEndDriveSessionMutation: () => [jest.fn(), { isLoading: false }],
 }));
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useParams: () => ({ tripId: "trip123" }),
-}));
-
-// Mock the store to prevent Redux errors
-jest.mock("../../app/store", () => ({
-  store: {
-    getState: () => ({}),
-    dispatch: jest.fn(),
-    subscribe: jest.fn(),
-  },
 }));
 
 describe("DriveSessionList", () => {

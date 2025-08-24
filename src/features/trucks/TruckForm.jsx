@@ -99,12 +99,16 @@ const TruckForm = () => {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label className="fw-semibold text-muted">
+            <Form.Label
+              className="fw-semibold text-muted"
+              htmlFor="formCondition"
+            >
               <i className="fas fa-cog me-2"></i>
               Condition
             </Form.Label>
             <Form.Control
               as="select"
+              id="formCondition"
               name="condition"
               value={formData.condition}
               onChange={handleChange}
@@ -120,13 +124,17 @@ const TruckForm = () => {
           </Form.Group>
 
           <Form.Group className="mb-4">
-            <Form.Label className="fw-semibold text-muted">
+            <Form.Label
+              className="fw-semibold text-muted"
+              htmlFor="formMileageFactor"
+            >
               <i className="fas fa-tachometer-alt me-2"></i>
               Mileage Factor
             </Form.Label>
             <Form.Control
               type="number"
               step="0.1"
+              id="formMileageFactor"
               name="mileage_factor"
               value={formData.mileage_factor}
               onChange={handleChange}

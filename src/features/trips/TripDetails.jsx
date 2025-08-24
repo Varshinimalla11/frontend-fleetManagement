@@ -631,6 +631,15 @@ export default function TripDetails() {
                   )}
                 </div>
               )}
+              {/* Owner action buttons for test */}
+              {/* {user?.role === "owner" && (
+                <div className="text-center mt-3">
+                  <Button variant="primary" className="me-2">
+                    Edit
+                  </Button>
+                  <Button variant="danger">Delete</Button>
+                </div>
+              )} */}
             </Col>
           </Row>
         </div>

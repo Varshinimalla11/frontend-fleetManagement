@@ -1,6 +1,9 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import Dashboard from "./Dashboard";
+import { Provider } from "react-redux";
+import { store } from "../../app/store";
+import { MemoryRouter } from "react-router-dom";
 
 jest.mock("../../contexts/AuthContext", () => ({
   useAuth: () => ({ user: { name: "Owner", role: "owner", _id: "u1" } }),
@@ -25,22 +28,27 @@ jest.mock("../../api/dashboardApi", () => ({
 }));
 
 // Mock the store to prevent Redux errors
-jest.mock("../../app/store", () => ({
-  store: {
-    getState: () => ({}),
-    dispatch: jest.fn(),
-    subscribe: jest.fn(),
-  },
-}));
 
 describe("Dashboard", () => {
   test("renders welcome message", () => {
-    render(<Dashboard />);
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Dashboard />
+        </MemoryRouter>
+      </Provider>
+    );
     expect(screen.getByText(/welcome/i)).toBeInTheDocument();
   });
 
   test("renders dashboard cards", () => {
-    render(<Dashboard />);
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Dashboard />
+        </MemoryRouter>
+      </Provider>
+    );
     expect(screen.getByText(/total trucks/i)).toBeInTheDocument();
     expect(screen.getByText(/total drivers/i)).toBeInTheDocument();
     expect(screen.getByText(/ongoing trips/i)).toBeInTheDocument();

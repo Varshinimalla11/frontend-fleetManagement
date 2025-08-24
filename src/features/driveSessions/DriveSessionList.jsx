@@ -6,7 +6,8 @@ import {
   useGetDriveSessionsByTripQuery,
   useStartDriveSessionMutation,
   useEndDriveSessionMutation,
-} from "./driveSessionsApi";
+  useDeleteDriveSessionMutation,
+} from "../../api/driveSessionsApi";
 import { Table, Button, Badge, Spinner, Modal, Card } from "react-bootstrap";
 import moment from "moment";
 import { toast } from "react-toastify";
