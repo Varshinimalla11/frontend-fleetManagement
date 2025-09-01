@@ -6,6 +6,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 import loginImg from "../../assets/login.jpeg";
+import registerImg from "../../assets/register_image.png";
 import "font-awesome/css/font-awesome.min.css";
 
 const Register = () => {
@@ -78,7 +79,8 @@ const Register = () => {
           md={6}
           className="d-none d-md-flex flex-column justify-content-center align-items-center"
           style={{
-            background: `linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(32, 201, 151, 0.9)), url(${loginImg}) center/cover no-repeat`,
+            background: `linear-gradient(135deg, rgba(2, 100, 182, 0.85), rgba(15, 59, 134, 0.85)), url(${registerImg}) center/cover no-repeat`,
+            color: "white",
           }}
         >
           <div style={{ textAlign: "center", color: "white" }}>
@@ -108,7 +110,7 @@ const Register = () => {
           md={6}
           className="d-flex align-items-center justify-content-center"
           style={{
-            background: "linear-gradient(135deg, #28a745 0%, #20c997 100%)",
+            background: "white",
           }}
         >
           <Card
@@ -122,8 +124,8 @@ const Register = () => {
           >
             <Card.Body className="p-5">
               <div className="text-center mb-4">
-                <i className="fas fa-user-circle fa-3x text-success mb-3"></i>
-                <h3 className="fw-bold text-success">Create Account</h3>
+                <i className="fas fa-user-circle fa-3x text-primary mb-3"></i>
+                <h3 className="fw-bold text-primary">Create Account</h3>
                 <p className="text-muted">
                   Fill in your details to get started
                 </p>
@@ -139,7 +141,7 @@ const Register = () => {
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formName">
                   <Form.Label className="fw-semibold text-dark">
-                    <i className="fas fa-user me-2 text-success"></i>
+                    <i className="fas fa-user me-2 text-primary"></i>
                     Full Name
                   </Form.Label>
                   <Form.Control
@@ -151,7 +153,7 @@ const Register = () => {
                     className="rounded-3 py-3 border-0 shadow-sm"
                     style={{
                       backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #28a745",
+                      borderLeft: "4px solid #0d6efd",
                     }}
                     required
                   />
@@ -159,7 +161,7 @@ const Register = () => {
 
                 <Form.Group className="mb-3" controlId="formEmail">
                   <Form.Label className="fw-semibold text-dark">
-                    <i className="fas fa-envelope me-2 text-success"></i>
+                    <i className="fas fa-envelope me-2 text-primary"></i>
                     Email Address
                   </Form.Label>
                   <Form.Control
@@ -177,7 +179,7 @@ const Register = () => {
 
                 <Form.Group className="mb-3" controlId="formPassword">
                   <Form.Label className="fw-semibold text-dark">
-                    <i className="fas fa-lock me-2 text-success"></i>
+                    <i className="fas fa-lock me-2 text-primary"></i>
                     Password
                   </Form.Label>
                   <Form.Control
@@ -189,7 +191,7 @@ const Register = () => {
                     className="rounded-3 py-3 border-0 shadow-sm"
                     style={{
                       backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #28a745",
+                      borderLeft: "4px solid #0d6efd",
                     }}
                     required
                   />
@@ -197,7 +199,7 @@ const Register = () => {
 
                 <Form.Group className="mb-3" controlId="formConfirmPassword">
                   <Form.Label className="fw-semibold text-dark">
-                    <i className="fas fa-lock me-2 text-success"></i>
+                    <i className="fas fa-lock me-2 text-primary"></i>
                     Confirm Password
                   </Form.Label>
                   <Form.Control
@@ -209,7 +211,7 @@ const Register = () => {
                     className="rounded-3 py-3 border-0 shadow-sm"
                     style={{
                       backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #28a745",
+                      borderLeft: "4px solid #0d6efd",
                     }}
                     required
                   />
@@ -217,7 +219,7 @@ const Register = () => {
 
                 <Form.Group className="mb-4" controlId="formPhone">
                   <Form.Label className="fw-semibold text-dark">
-                    <i className="fas fa-phone me-2 text-success"></i>
+                    <i className="fas fa-phone me-2 text-primary"></i>
                     Phone Number
                   </Form.Label>
                   <Form.Control
@@ -229,7 +231,7 @@ const Register = () => {
                     className="rounded-3 py-3 border-0 shadow-sm"
                     style={{
                       backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #28a745",
+                      borderLeft: "4px solid #0d6efd",
                     }}
                   />
                 </Form.Group>
@@ -239,7 +241,7 @@ const Register = () => {
                   disabled={loading}
                   className="w-100 py-3 fw-semibold rounded-3 border-0 shadow-sm mb-3"
                   style={{
-                    background: "linear-gradient(135deg, #28a745, #20c997)",
+                    background: "linear-gradient(135deg, #0d6efd, #0b5ed7)",
                     transition: "all 0.3s ease",
                   }}
                   onMouseEnter={(e) =>
@@ -272,7 +274,7 @@ const Register = () => {
                 <span className="text-muted">Already have an account? </span>
                 <Link
                   to="/login"
-                  className="text-decoration-none fw-semibold text-success"
+                  className="text-decoration-none fw-semibold text-primary"
                 >
                   <i className="fas fa-sign-in-alt me-1"></i>
                   Sign In Here

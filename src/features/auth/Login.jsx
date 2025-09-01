@@ -1,21 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Container,
-  Col,
-  Card,
-  Form,
-  Button,
-  Alert,
-  Modal,
-} from "react-bootstrap";
+import { Row, Col, Card, Form, Button, Alert, Modal } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useForgotPasswordMutation } from "../../api/authApi";
 import { toast } from "react-toastify";
-
-import loginImg from "../../assets/login.jpeg"; // Adjust path as necessary
+import truck from "../../assets/truck.jpg";
 
 const Login = () => {
   const { login } = useAuth();
@@ -42,7 +33,6 @@ const Login = () => {
       setLoading(true);
       const response = await login(formData).unwrap();
 
-      // ✅ Check if login was actually successful
       if (response && response.token) {
         toast.success("✅ Login successful");
         navigate(from, { replace: true });
@@ -50,8 +40,6 @@ const Login = () => {
         toast.error("Login failed, please try again");
       }
     } catch (err) {
-      console.error("Login error details:", err);
-
       let errorMessage = "Credentials entered are incorrect";
       if (err?.data?.message && typeof err.data.message === "string") {
         errorMessage = err.data.message;
@@ -64,12 +52,10 @@ const Login = () => {
       setError(errorMessage);
       toast.error(errorMessage);
 
-      // ✅ Check for specific error types before reloading
       const shouldReload =
-        err?.status === 400 || // Bad request
-        err?.status === 401 || // Unauthorized
-        (err?.data?.message && // Invalid credentials message
-          err?.data?.message?.includes("invalid")); // Invalid credentials message
+        err?.status === 400 ||
+        err?.status === 401 ||
+        (err?.data?.message && err?.data?.message?.includes("invalid"));
 
       if (shouldReload) {
         setTimeout(() => {
@@ -81,7 +67,6 @@ const Login = () => {
     }
   };
 
-  // Add forgot password handler
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     if (!forgotEmail) {
@@ -103,47 +88,140 @@ const Login = () => {
   };
 
   return (
-    <Container
-      fluid
-      className="vh-100 d-flex align-items-stretch p-0"
-      style={{ overflow: "hidden" }}
+    <div
+      style={{
+        display: "flex",
+        width: "100vw",
+        height: "100vh",
+        background: "#e9f4fb",
+        overflow: "hidden",
+      }}
     >
-      {/* Left half: Welcome image and text */}
-      <Col
-        md={6}
-        className="d-none d-md-flex flex-column justify-content-center align-items-center"
+      <div
         style={{
-          background: `linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(155, 89, 182, 0.9)), url(${loginImg}) center center/cover no-repeat`,
-          color: "#fff",
-          minHeight: "100vh",
+          width: "50%",
+          height: "100vh",
           position: "relative",
+          backgroundImage: `url(${truck})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          borderTopLeftRadius: 12,
+          borderBottomLeftRadius: 12,
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "40px 24px",
         }}
       >
-        <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
-          <div className="mb-4">
-            <i className="fas fa-truck fa-4x mb-3" style={{ opacity: 0.9 }}></i>
-          </div>
-          <h1
-            className="fw-bold mb-3 display-4"
-            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.3)" }}
-          >
-            Welcome Back
+        {/* Dark overlay for text contrast */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(2, 100, 182, 0.75)", // semi-transparent blue overlay
+            borderTopLeftRadius: 12,
+            borderBottomLeftRadius: 12,
+            zIndex: 1,
+          }}
+        />
+        {/* Content layered above overlay */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            textAlign: "center",
+            maxWidth: 440,
+            margin: "0 auto",
+          }}
+        >
+          <h1 style={{ fontWeight: 800, fontSize: 44, marginBottom: 20 }}>
+            Welcome to FleetFlow
           </h1>
-          <p
-            className="fs-5 fw-light"
-            style={{ textShadow: "0 2px 6px rgba(0,0,0,0.3)" }}
-          >
-            Enter your details to access your fleet management dashboard.
+          <p style={{ fontSize: 18, lineHeight: 1.5 }}>
+            The smart way to manage your fleet and drivers.
+            <br />
+            Boost productivity and streamline every operation.
           </p>
         </div>
-      </Col>
+      </div>
+      {/* Right side - Login form */}
+      {/* <div
+        style={{
+          width: "50%",
+          background: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "48px 32px",
+          borderTopRightRadius: 12,
+          borderBottomRightRadius: 12,
+        }}
+      >
+        <div style={{ width: "100%", maxWidth: 400 }}>
+          <h2 style={{ fontWeight: 600, fontSize: 24, marginBottom: 20 }}>
+            Login to Your Account
+          </h2>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                required
+              />
+            </Form.Group>
 
-      {/* Right half: Login form */}
+            <Form.Group className="mb-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+              />
+            </Form.Group>
+
+            <div className="mb-3 text-end">
+              <Button
+                variant="link"
+                onClick={() => setShowForgotPassword(true)}
+                style={{ textDecoration: "none" }}
+              >
+                Forgot password?
+              </Button>
+            </div>
+
+            {error && <Alert variant="danger">{error}</Alert>}
+
+            <Button
+              type="submit"
+              variant="primary"
+              style={{ width: "100%", fontWeight: 600 }}
+              disabled={loading}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </Button>
+          </Form>
+          <div style={{ marginTop: 16, textAlign: "center" }}>
+            Don&apos;t have an account? <Link to="/register">Sign Up</Link>
+          </div>
+        </div>
+      </div> */}
       <Col
         md={6}
         className="d-flex align-items-center justify-content-center"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #667eea 0%, white 100%)",
           minHeight: "100vh",
         }}
       >
@@ -270,8 +348,7 @@ const Login = () => {
           </Card.Body>
         </Card>
       </Col>
-
-      {/* Enhanced Forgot Password Modal */}
+      {/* Forgot Password Modal */}
       <Modal
         show={showForgotPassword}
         onHide={() => setShowForgotPassword(false)}
@@ -284,23 +361,22 @@ const Login = () => {
           style={{ background: "linear-gradient(135deg, #007bff, #0056b3)" }}
         >
           <Modal.Title className="fw-bold text-white">
-            <i className="fas fa-key me-2"></i>
-            Reset Password
+            <i className="fas fa-key me-2"></i> Reset Password
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-4">
           <div className="text-center mb-3">
             <i className="fas fa-envelope-open fa-3x text-primary mb-3"></i>
             <p className="text-muted">
-              Enter your email address and we'll send you a link to reset your
-              password.
+              Enter your email address and we&apos;ll send you a link to reset
+              your password.
             </p>
           </div>
           <Form onSubmit={handleForgotPassword}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold text-dark">
-                <i className="fas fa-envelope me-2 text-primary"></i>
-                Email Address
+                <i className="fas fa-envelope me-2 text-primary"></i> Email
+                Address
               </Form.Label>
               <Form.Control
                 type="email"
@@ -323,14 +399,15 @@ const Login = () => {
             onClick={() => setShowForgotPassword(false)}
             className="rounded-3 px-4 fw-semibold"
           >
-            <i className="fas fa-times me-1"></i>
-            Cancel
+            <i className="fas fa-times me-1"></i> Cancel
           </Button>
           <Button
             onClick={handleForgotPassword}
             disabled={forgotLoading}
             className="rounded-3 px-4 fw-semibold border-0"
-            style={{ background: "linear-gradient(135deg, #007bff, #0056b3)" }}
+            style={{
+              background: "linear-gradient(135deg, #007bff, #0056b3)",
+            }}
           >
             {forgotLoading ? (
               <>
@@ -342,14 +419,13 @@ const Login = () => {
               </>
             ) : (
               <>
-                <i className="fas fa-paper-plane me-1"></i>
-                Send Reset Link
+                <i className="fas fa-paper-plane me-1"></i> Send Reset Link
               </>
             )}
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 };
 
