@@ -169,7 +169,10 @@ export default function TripDetails() {
           toast.error("Please enter remaining fuel before completing trip");
           return;
         }
-        await completeTrip({ id, fuel_left: Number(modalInputs.fuelLeft) });
+        await completeTrip({
+          id,
+          fuel_left: Number(modalInputs.fuelLeft),
+        }).unwrap();
       } else if (modalAction === "endDriveSession") {
         if (!modalInputs.fuelLeft) {
           toast.error("Please enter remaining fuel at end of drive session");
@@ -178,7 +181,7 @@ export default function TripDetails() {
         await endSession({
           session_id: currentId,
           fuel_left: Number(modalInputs.fuelLeft),
-        });
+        }).unwrap();
       } else if (modalAction === "endRest") {
         if (!modalInputs.fuelEnd) {
           toast.error("Please enter fuel left at end of rest");
@@ -187,7 +190,7 @@ export default function TripDetails() {
         await endRest({
           rest_id: currentId,
           fuel_at_rest_end: Number(modalInputs.fuelEnd),
-        });
+        }).unwrap();
       } else if (modalAction === "logRefuel") {
         if (!modalInputs.fuelBefore || !modalInputs.fuelAdded) {
           toast.error("Please enter fuel amounts");
@@ -199,7 +202,7 @@ export default function TripDetails() {
           fuel_before: Number(modalInputs.fuelBefore),
           fuel_added: Number(modalInputs.fuelAdded),
           payment_mode: modalInputs.paymentMode || "cash",
-        });
+        }).unwrap();
       }
 
       // Refetch after action complete
@@ -211,7 +214,19 @@ export default function TripDetails() {
 
       setShowModal(false);
     } catch (err) {
-      alert("Error submitting data. Please try again.");
+      let errorMessage = "Error submitting data. Please try again.";
+
+      if (err?.data?.message) {
+        errorMessage = String(err.data.message);
+      } else if (err?.error) {
+        errorMessage = String(err.error);
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      } else if (typeof err === "object") {
+        // Convert object errors safely to string if possible
+        errorMessage = JSON.stringify(err).replace(/["{}]/g, "");
+      }
+      toast.error(errorMessage);
     }
   };
   // Handlers

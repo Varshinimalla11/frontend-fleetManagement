@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Navbar as RBNavbar, Nav } from "react-bootstrap";
+import { Container, Navbar as RBNavbar, Nav, Row, Col } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "./Navbar";
