@@ -97,7 +97,7 @@ const RegisterDriver = () => {
       <div
         className="d-flex justify-content-center align-items-center vh-100"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #1c94e4ff 0%, #1a87ecff 100%)",
           minHeight: "100vh",
         }}
       >
@@ -144,7 +144,7 @@ const RegisterDriver = () => {
     return (
       <div
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          background: "linear-gradient(135deg, #667eea 0%, #1180e7ff 100%)",
           minHeight: "100vh",
           paddingTop: "2rem",
           paddingBottom: "2rem",

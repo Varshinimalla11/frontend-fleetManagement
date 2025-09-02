@@ -22,6 +22,7 @@ import {
 } from "../../api/refuelEventsApi";
 import { useGetNotificationsQuery } from "../../api/notificationsApi";
 import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "react-toastify";
 import {
   Row,
   Col,
@@ -164,26 +165,34 @@ export default function TripDetails() {
   const handleModalSubmit = async () => {
     try {
       if (modalAction === "completeTrip") {
-        if (!modalInputs.fuelLeft)
-          return alert("Please enter remaining fuel before completing trip");
+        if (!modalInputs.fuelLeft) {
+          toast.error("Please enter remaining fuel before completing trip");
+          return;
+        }
         await completeTrip({ id, fuel_left: Number(modalInputs.fuelLeft) });
       } else if (modalAction === "endDriveSession") {
-        if (!modalInputs.fuelLeft)
-          return alert("Please enter remaining fuel at end of drive session");
+        if (!modalInputs.fuelLeft) {
+          toast.error("Please enter remaining fuel at end of drive session");
+          return;
+        }
         await endSession({
           session_id: currentId,
           fuel_left: Number(modalInputs.fuelLeft),
         });
       } else if (modalAction === "endRest") {
-        if (!modalInputs.fuelEnd)
-          return alert("Please enter fuel left at end of rest");
+        if (!modalInputs.fuelEnd) {
+          toast.error("Please enter fuel left at end of rest");
+          return;
+        }
         await endRest({
           rest_id: currentId,
           fuel_at_rest_end: Number(modalInputs.fuelEnd),
         });
       } else if (modalAction === "logRefuel") {
-        if (!modalInputs.fuelBefore || !modalInputs.fuelAdded)
-          return alert("Please enter fuel amounts");
+        if (!modalInputs.fuelBefore || !modalInputs.fuelAdded) {
+          toast.error("Please enter fuel amounts");
+          return;
+        }
         await logRefuel({
           trip_id: trip._id,
           event_time: new Date().toISOString(),
