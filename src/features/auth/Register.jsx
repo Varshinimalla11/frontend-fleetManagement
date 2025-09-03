@@ -79,7 +79,7 @@ const Register = () => {
           md={6}
           className="d-none d-md-flex flex-column justify-content-center align-items-center"
           style={{
-            background: `linear-gradient(135deg, rgba(2, 100, 182, 0.85), rgba(15, 59, 134, 0.85)), url(${registerImg}) center/cover no-repeat`,
+            background: `linear-gradient(135deg, rgba(115, 183, 238, 0.85), rgba(15, 59, 134, 0.85)), url(${registerImg}) center/cover no-repeat`,
             color: "white",
           }}
         >

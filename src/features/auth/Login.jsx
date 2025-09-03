@@ -123,7 +123,7 @@ const Login = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(2, 100, 182, 0.75)", // semi-transparent blue overlay
+            //backgroundColor: "rgba(2, 100, 182, 0.75)", // semi-transparent blue overlay
             borderTopLeftRadius: 12,
             borderBottomLeftRadius: 12,
             zIndex: 1,
@@ -221,7 +221,7 @@ const Login = () => {
         md={6}
         className="d-flex align-items-center justify-content-center"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, white 100%)",
+          background: "linear-gradient(135deg, #8c9ff3ff 0%, white 100%)",
           minHeight: "100vh",
         }}
       >
