@@ -32,6 +32,7 @@ import MyDrivers from "./features/drivers/MyDrivers";
 import ResetPassword from "./features/auth/ResetPassword";
 import SendOtpPage from "./features/auth/SendOtpPage";
 import VerifyOtpPage from "./features/auth/VerifyOtpPage";
+import Profile from "./components/Profile";
 
 import "./App.css";
 
@@ -221,6 +222,14 @@ function App() {
               element={
                 <ProtectedRoute roles={["owner", "admin"]}>
                   <TripForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute roles={["owner", "admin", "driver"]}>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

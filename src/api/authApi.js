@@ -19,6 +19,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     getCurrentUser: builder.query({
       query: () => "/auth/me",
+      providesTags: ["CurrentUser"],
     }),
 
     registerDriverFromInvite: builder.mutation({
@@ -67,6 +68,14 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    updateProfile: builder.mutation({
+      query: (data) => ({
+        url: "/auth/profile",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["CurrentUser"],
+    }),
   }),
 
   overrideExisting: false,
@@ -83,4 +92,5 @@ export const {
   useValidateResetTokenQuery,
   useSendOtpMutation,
   useVerifyOtpMutation,
+  useUpdateProfileMutation,
 } = authApi;

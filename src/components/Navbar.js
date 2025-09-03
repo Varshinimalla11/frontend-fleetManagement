@@ -279,8 +279,41 @@ const Navbar = () => {
                     </Badge>
                   )}
                 </Nav.Link>
-
                 <NavDropdown
+                  title={user.name}
+                  id="user-dropdown"
+                  className="mx-1"
+                  style={{
+                    "--bs-dropdown-link-hover-bg": "#0d6efd",
+                    "--bs-dropdown-border-radius": "10px",
+                  }}
+                >
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/profile"
+                    onClick={closeNavbar}
+                  >
+                    Profile
+                  </NavDropdown.Item>
+                  {/* Existing logout item */}
+                  <NavDropdown.Item
+                    className="text-danger fw-medium"
+                    onClick={() => {
+                      handleLogout();
+                      closeNavbar();
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "#fff5f5";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                {/* <NavDropdown
                   title={
                     <span className="text-white fw-medium">
                       <i className="fas fa-user me-2 text-info"></i> {user.name}
@@ -318,7 +351,7 @@ const Navbar = () => {
                     <i className="fas fa-sign-out-alt me-2"></i>
                     Logout
                   </NavDropdown.Item>
-                </NavDropdown>
+                </NavDropdown> */}
               </>
             ) : (
               <>
