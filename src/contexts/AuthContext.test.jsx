@@ -1,6 +1,8 @@
 import React from "react";
 import { render, screen, act } from "@testing-library/react";
 import { AuthProvider, useAuth } from "./AuthContext";
+import { Provider } from "react-redux";
+import { store } from "../app/store";
 
 // Mock localStorage
 const localStorageMock = {
@@ -114,9 +116,11 @@ describe("AuthContext", () => {
 
   test("provides initial state", () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </Provider>
     );
 
     expect(screen.getByTestId("user")).toHaveTextContent("No user");
@@ -136,9 +140,11 @@ describe("AuthContext", () => {
     global.localStorage.setItem("token", "mock-token");
 
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </Provider>
     );
 
     expect(screen.getByTestId("user")).toHaveTextContent("Test User");
@@ -147,9 +153,11 @@ describe("AuthContext", () => {
 
   test("handles login function", async () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </Provider>
     );
 
     const loginButton = screen.getByText("Login");
@@ -163,9 +171,11 @@ describe("AuthContext", () => {
 
   test("handles logout function", async () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </Provider>
     );
 
     const logoutButton = screen.getByText("Logout");
@@ -179,9 +189,11 @@ describe("AuthContext", () => {
 
   test("handles register function", async () => {
     render(
-      <AuthProvider>
-        <TestComponent />
-      </AuthProvider>
+      <Provider store={store}>
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      </Provider>
     );
 
     const registerButton = screen.getByText("Register");
