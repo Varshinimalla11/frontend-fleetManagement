@@ -7,6 +7,8 @@ import {
 } from "../api/authApi";
 import { disconnectSocket } from "../utils/socket";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { baseApi } from "../api/baseApi";
 
 const AuthContext = createContext();
 
@@ -17,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isInitializing, setIsInitializing] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const {
     data: currentUser,
@@ -88,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem("token");
     setUser(null);
+    dispatch(baseApi.util.resetApiState());
     disconnectSocket();
   };
   const isAuthenticated = !!token && !!user;

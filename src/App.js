@@ -29,10 +29,19 @@ import TripForm from "./features/trips/TripForm";
 import TripDetails from "./features/trips/TripDetails";
 import NotificationsList from "./features/notifications/NotificationList";
 import MyDrivers from "./features/drivers/MyDrivers";
+import Owners from "./features/owners/Owners";
 import ResetPassword from "./features/auth/ResetPassword";
 import SendOtpPage from "./features/auth/SendOtpPage";
 import VerifyOtpPage from "./features/auth/VerifyOtpPage";
 import Profile from "./components/Profile";
+// import AdminLayout from "./Admin/AdminLayout";
+// import AdminDashboard from "./Admin/features/AdminDashboard";
+// import AdminOwners from "./Admin/features/AdminOwners";
+// import AdminDrivers from "./Admin/features/AdminDrivers";
+// import AdminNotifications from "./Admin/features/AdminNotifications";
+// import AdminTrips from "./Admin/features/AdminTrips";
+// import AdminTripForm from "./Admin/features/AdminTripForm";
+// import AdminTrucks from "./Admin/features/AdminTrucks";
 
 import "./App.css";
 
@@ -42,7 +51,20 @@ function App() {
   if (isLoading || isInitializing) {
     return <div>Loading...</div>;
   }
+  // const HomeRedirect = () => {
+  //   const { user } = useAuth();
 
+  //   if (!user) return <Navigate to="/login" replace />;
+
+  //   if (user.role === "admin")
+  //     return <Navigate to="/admin/dashboard" replace />;
+
+  //   if (user.role === "owner") return <Navigate to="/dashboard" replace />;
+
+  //   if (user.role === "driver") return <Navigate to="/dashboard" replace />;
+
+  //   return <Navigate to="/login" replace />;
+  // };
   return (
     <Router>
       <NotificationProvider>
@@ -59,6 +81,7 @@ function App() {
                 <LandingPage />
               )
             }
+            // element={isAuthenticated ? <HomeRedirect /> : <LandingPage />}
           />
           <Route
             path="/login"
@@ -122,7 +145,25 @@ function App() {
               )
             }
           />
-
+          {/* <Route
+            path="/admin"
+            element={
+              <ProtectedRoute roles={["admin"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="owners" element={<AdminOwners />} />
+            <Route path="drivers" element={<AdminDrivers />} />
+            <Route path="trucks" element={<AdminTrucks />} />
+            <Route path="trips" element={<AdminTrips />} />
+            <Route path="trips/new" element={<AdminTripForm />} />
+            <Route path="trips/:id/edit" element={<AdminTripForm />} />
+            <Route path="trips/:id" element={<TripDetails />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+          </Route> */}
           {/* Protected routes (directly under /) */}
           <Route
             path="/"
@@ -154,6 +195,16 @@ function App() {
               element={
                 <ProtectedRoute roles={["owner", "admin"]}>
                   <MyDrivers />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* OWNERS - admin only */}
+            <Route
+              path="owners"
+              element={
+                <ProtectedRoute roles={["admin"]}>
+                  <Owners />
                 </ProtectedRoute>
               }
             />

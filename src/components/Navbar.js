@@ -125,6 +125,28 @@ const Navbar = () => {
           <Nav className="me-auto" onClick={closeNavbar}>
             {(user?.role === "owner" || user?.role === "admin") && (
               <>
+                {user.role === "admin" && (
+                  <Nav.Link
+                    as={Link}
+                    to="/owners"
+                    className="mx-1 px-3 py-2 rounded-pill text-white fw-medium"
+                    style={{
+                      transition: "all 0.3s ease",
+                      textDecoration: "none",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(255,255,255,0.15)";
+                      e.target.style.transform = "translateY(-2px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    <i className="fas fa-users me-2 text-primary"></i>
+                    Owners
+                  </Nav.Link>
+                )}
                 <Nav.Link
                   as={Link}
                   to="/trucks"
