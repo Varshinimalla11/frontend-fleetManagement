@@ -26,6 +26,8 @@ const ResetPassword = () => {
     newPassword: "",
     confirmPassword: "",
   });
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -153,44 +155,86 @@ const ResetPassword = () => {
           )}
 
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 position-relative">
               <Form.Label className="fw-semibold text-dark">
                 <i className="fas fa-lock me-2 text-primary"></i>
                 New Password
               </Form.Label>
-              <Form.Control
-                type="password"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                placeholder="Enter new password"
-                className="rounded-3 py-3 border-0 shadow-sm"
-                style={{
-                  backgroundColor: "#f8f9fa",
-                  borderLeft: "4px solid #ffc107",
-                }}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Form.Control
+                  type={showNewPassword ? "text" : "password"}
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleChange}
+                  placeholder="Enter new password"
+                  className="rounded-3 py-3 border-0 shadow-sm"
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "4px solid #ffc107",
+                    paddingRight: "40px",
+                  }}
+                  required
+                />
+                <span
+                  onClick={() => setShowNewPassword((prev) => !prev)}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    color: "#ffc107",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  <i
+                    className={
+                      showNewPassword ? "fas fa-eye-slash" : "fas fa-eye"
+                    }
+                  ></i>
+                </span>
+              </div>
             </Form.Group>
 
-            <Form.Group className="mb-4">
+            <Form.Group className="mb-4 position-relative">
               <Form.Label className="fw-semibold text-dark">
                 <i className="fas fa-lock me-2 text-primary"></i>
                 Confirm Password
               </Form.Label>
-              <Form.Control
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm new password"
-                className="rounded-3 py-3 border-0 shadow-sm"
-                style={{
-                  backgroundColor: "#f8f9fa",
-                  borderLeft: "4px solid #ffc107",
-                }}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Form.Control
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm new password"
+                  className="rounded-3 py-3 border-0 shadow-sm"
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    borderLeft: "4px solid #ffc107",
+                    paddingRight: "40px",
+                  }}
+                  required
+                />
+                <span
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    color: "#ffc107",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  <i
+                    className={
+                      showConfirmPassword ? "fas fa-eye-slash" : "fas fa-eye"
+                    }
+                  ></i>
+                </span>
+              </div>
             </Form.Group>
 
             <Button

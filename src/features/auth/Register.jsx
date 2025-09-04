@@ -25,6 +25,8 @@ const Register = () => {
     confirmPassword: "",
     phone: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -177,44 +179,94 @@ const Register = () => {
                   />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Group
+                  className="mb-3 position-relative"
+                  controlId="formPassword"
+                >
                   <Form.Label className="fw-semibold text-dark">
                     <i className="fas fa-lock me-2 text-primary"></i>
                     Password
                   </Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter a strong password"
-                    className="rounded-3 py-3 border-0 shadow-sm"
-                    style={{
-                      backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #0d6efd",
-                    }}
-                    required
-                  />
+                  <div style={{ position: "relative" }}>
+                    <Form.Control
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Enter a strong password"
+                      className="rounded-3 py-3 border-0 shadow-sm"
+                      style={{
+                        backgroundColor: "#f8f9fa",
+                        borderLeft: "4px solid #0d6efd",
+                        paddingRight: "40px",
+                      }}
+                      required
+                    />
+                    <span
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      style={{
+                        position: "absolute",
+                        right: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        color: "#0d6efd",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      <i
+                        className={
+                          showPassword ? "fas fa-eye-slash" : "fas fa-eye"
+                        }
+                      ></i>
+                    </span>
+                  </div>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formConfirmPassword">
+                <Form.Group
+                  className="mb-3 position-relative"
+                  controlId="formConfirmPassword"
+                >
                   <Form.Label className="fw-semibold text-dark">
                     <i className="fas fa-lock me-2 text-primary"></i>
                     Confirm Password
                   </Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Re-enter your password"
-                    className="rounded-3 py-3 border-0 shadow-sm"
-                    style={{
-                      backgroundColor: "#f8f9fa",
-                      borderLeft: "4px solid #0d6efd",
-                    }}
-                    required
-                  />
+                  <div style={{ position: "relative" }}>
+                    <Form.Control
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Re-enter your password"
+                      className="rounded-3 py-3 border-0 shadow-sm"
+                      style={{
+                        backgroundColor: "#f8f9fa",
+                        borderLeft: "4px solid #0d6efd",
+                        paddingRight: "40px",
+                      }}
+                      required
+                    />
+                    <span
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      style={{
+                        position: "absolute",
+                        right: "12px",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        color: "#0d6efd",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      <i
+                        className={
+                          showConfirmPassword
+                            ? "fas fa-eye-slash"
+                            : "fas fa-eye"
+                        }
+                      ></i>
+                    </span>
+                  </div>
                 </Form.Group>
 
                 <Form.Group className="mb-4" controlId="formPhone">

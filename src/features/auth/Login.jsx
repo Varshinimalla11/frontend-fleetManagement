@@ -15,6 +15,7 @@ const Login = () => {
   const [forgotPassword] = useForgotPasswordMutation();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -270,24 +271,48 @@ const Login = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-4" controlId="formPassword">
+              <Form.Group
+                className="mb-4 position-relative"
+                controlId="formPassword"
+              >
                 <Form.Label className="fw-semibold text-dark">
                   <i className="fas fa-lock me-2 text-primary"></i>
                   Password
                 </Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  className="rounded-3 py-3 border-0 shadow-sm"
-                  style={{
-                    backgroundColor: "#f8f9fa",
-                    borderLeft: "4px solid #007bff",
-                  }}
-                  required
-                />
+                <div style={{ position: "relative" }}>
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    className="rounded-3 py-3 border-0 shadow-sm"
+                    style={{
+                      backgroundColor: "#f8f9fa",
+                      borderLeft: "4px solid #007bff",
+                      paddingRight: "40px",
+                    }}
+                    required
+                  />
+                  <span
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    style={{
+                      position: "absolute",
+                      right: "12px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      color: "#007bff",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    <i
+                      className={
+                        showPassword ? "fas fa-eye-slash" : "fas fa-eye"
+                      }
+                    ></i>
+                  </span>
+                </div>
               </Form.Group>
 
               <Button
