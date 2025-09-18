@@ -1,0 +1,53 @@
+import { test, expect } from "@playwright/test";
+
+test("test", async ({ page }) => {
+  await page.goto("http://localhost:3000/login");
+  await page.getByRole("textbox", { name: " Email Address" }).click();
+  await page
+    .getByRole("textbox", { name: " Email Address" })
+    .fill("malla.varshini03@gmail.com");
+  await page.getByRole("textbox", { name: " Password" }).click();
+  await page.getByRole("textbox", { name: " Password" }).fill("Varshini@123");
+  await page.getByRole("button", { name: " Sign In" }).click();
+  await page.getByRole("link", { name: " Trucks" }).click();
+  await page.getByText("No trucks available").click();
+  await page.getByRole("heading", { name: " Truck Fleet Management" }).click();
+  await page.getByRole("cell", { name: " Plate Number" }).click();
+  await page.getByRole("cell", { name: " Condition" }).click();
+  await page.getByRole("cell", { name: " Mileage Factor" }).click();
+  await page.getByRole("cell", { name: " Actions" }).click();
+  await page.getByRole("button", { name: "+ Add New Truck" }).click();
+  await page.getByRole("textbox", { name: " Plate Number" }).click();
+  await page.getByRole("textbox", { name: " Plate Number" }).fill("Ap30S6323");
+  await page.getByLabel("Condition").selectOption("active");
+  await page.getByRole("spinbutton", { name: " Mileage Factor" }).click();
+  await page.getByRole("spinbutton", { name: " Mileage Factor" }).fill("90");
+  await page.getByRole("button", { name: " Save Truck" }).click();
+  await page.getByText("Truck created successfully").click();
+  await page.getByRole("button", { name: "View Truck" }).click();
+  await page.getByRole("heading", { name: " Truck Details" }).click();
+  await page.getByText("Plate Number:").click();
+  await page.getByText("Ap30S6323").click();
+  await page.getByText("Condition:active").click();
+  await page.getByText("active").click();
+  await page.getByText("Mileage Factor:").click();
+  await page.getByText("90").click();
+  await page.getByRole("button", { name: " Back to List" }).click();
+  await page.getByRole("button", { name: "Edit Truck" }).click();
+  await page.getByRole("textbox", { name: " Plate Number" }).click();
+  await page.getByLabel("Condition").selectOption("maintenance_needed");
+  await page.getByRole("spinbutton", { name: " Mileage Factor" }).click();
+  await page.getByRole("button", { name: " Save Truck" }).click();
+  await page.getByText("Truck updated successfully").click();
+  await page.getByRole("button", { name: "Edit Truck" }).click();
+  await page.getByRole("button", { name: " Cancel" }).click();
+  await page.getByRole("button", { name: "Delete Truck" }).click();
+  await page.getByText("Confirm Delete").click();
+  await page.getByText("Are you sure you want to").click();
+  await page.getByRole("button", { name: "Cancel" }).click();
+  await page.getByRole("button", { name: "Delete Truck" }).click();
+  await page.getByText("Confirm Delete").click();
+  await page.getByText("Are you sure you want to").click();
+  await page.getByRole("button", { name: "Delete", exact: true }).click();
+  await page.getByText("Truck deleted successfully").click();
+});
