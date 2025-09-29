@@ -1,53 +1,80 @@
 import { test, expect } from "@playwright/test";
 
-test("test", async ({ page }) => {
-  await page.goto("http://localhost:3000/login");
-  await page.getByRole("textbox", { name: " Email Address" }).click();
-  await page
-    .getByRole("textbox", { name: " Email Address" })
-    .fill("malla.varshini03@gmail.com");
-  await page.getByRole("textbox", { name: " Password" }).click();
-  await page.getByRole("textbox", { name: " Password" }).fill("Varshini@123");
-  await page.getByRole("button", { name: " Sign In" }).click();
-  await page.getByRole("link", { name: " Trucks" }).click();
-  await page.getByText("No trucks available").click();
-  await page.getByRole("heading", { name: " Truck Fleet Management" }).click();
-  await page.getByRole("cell", { name: " Plate Number" }).click();
-  await page.getByRole("cell", { name: " Condition" }).click();
-  await page.getByRole("cell", { name: " Mileage Factor" }).click();
-  await page.getByRole("cell", { name: " Actions" }).click();
-  await page.getByRole("button", { name: "+ Add New Truck" }).click();
-  await page.getByRole("textbox", { name: " Plate Number" }).click();
-  await page.getByRole("textbox", { name: " Plate Number" }).fill("Ap30S6323");
-  await page.getByLabel("Condition").selectOption("active");
-  await page.getByRole("spinbutton", { name: " Mileage Factor" }).click();
-  await page.getByRole("spinbutton", { name: " Mileage Factor" }).fill("90");
-  await page.getByRole("button", { name: " Save Truck" }).click();
-  await page.getByText("Truck created successfully").click();
-  await page.getByRole("button", { name: "View Truck" }).click();
-  await page.getByRole("heading", { name: " Truck Details" }).click();
-  await page.getByText("Plate Number:").click();
-  await page.getByText("Ap30S6323").click();
-  await page.getByText("Condition:active").click();
-  await page.getByText("active").click();
-  await page.getByText("Mileage Factor:").click();
-  await page.getByText("90").click();
-  await page.getByRole("button", { name: " Back to List" }).click();
-  await page.getByRole("button", { name: "Edit Truck" }).click();
-  await page.getByRole("textbox", { name: " Plate Number" }).click();
-  await page.getByLabel("Condition").selectOption("maintenance_needed");
-  await page.getByRole("spinbutton", { name: " Mileage Factor" }).click();
-  await page.getByRole("button", { name: " Save Truck" }).click();
-  await page.getByText("Truck updated successfully").click();
-  await page.getByRole("button", { name: "Edit Truck" }).click();
-  await page.getByRole("button", { name: " Cancel" }).click();
-  await page.getByRole("button", { name: "Delete Truck" }).click();
-  await page.getByText("Confirm Delete").click();
-  await page.getByText("Are you sure you want to").click();
-  await page.getByRole("button", { name: "Cancel" }).click();
-  await page.getByRole("button", { name: "Delete Truck" }).click();
-  await page.getByText("Confirm Delete").click();
-  await page.getByText("Are you sure you want to").click();
-  await page.getByRole("button", { name: "Delete", exact: true }).click();
-  await page.getByText("Truck deleted successfully").click();
+test.describe("Truck Management", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("http://localhost:3000/login");
+    await page.getByLabel("Email").fill("malla.varshini03@gmail.com");
+    await page.getByLabel("Password").fill("Varshini@123");
+    await page.getByRole("button", { name: "Sign In" }).click();
+
+    await page.getByRole("link", { name: "Trucks" }).click();
+  });
+
+  test.describe("Truck List Page", () => {
+    test("can navigate to add truck page", async ({ page }) => {
+      await page.getByRole("button", { name: "Add New Truck" }).click();
+      await expect(
+        page.getByRole("heading", { name: "Add New Truck" })
+      ).toBeVisible();
+    });
+  });
+
+  test.describe("Truck Details Page", () => {
+    test("shows truck details", async ({ page }) => {
+      await page.getByRole("link", { name: "AP30S6323" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "Truck Details" })
+      ).toBeVisible();
+      await expect(page.getByText("Plate Number:")).toBeVisible();
+      await expect(page.getByText("AP30S6323")).toBeVisible();
+    });
+  });
+
+  test.describe("Truck Form", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.getByRole("button", { name: "Add New Truck" }).click();
+    });
+
+    test("creates a new truck", async ({ page }) => {
+      const randomPlate = `AP30S${Math.floor(Math.random() * 10000)}`;
+
+      await page.getByLabel("Plate Number").fill(randomPlate);
+      await page.getByLabel("Condition").selectOption("active");
+      await page.getByLabel("Mileage Factor").fill("90");
+      await page.getByRole("button", { name: "Save Truck" }).click();
+      await expect(page.getByText("Truck created successfully")).toBeVisible();
+    });
+
+    // Add New Truck Navigation
+    test("navigates to add truck form", async ({ page }) => {
+      await expect(
+        page.getByRole("heading", { name: "Add New Truck" })
+      ).toBeVisible();
+    });
+
+    // API Failure
+    test("shows error when API fails", async ({ page }) => {
+      await page.route("**/api/trucks", (route) =>
+        route.fulfill({ status: 500, body: "" })
+      );
+      await page.goto("http://localhost:3000/trucks");
+      await expect(page.getByText("Error loading trucks")).toBeVisible();
+    });
+  });
+
+  test.describe("Truck API Mock", () => {
+    test("shows empty state with no trucks", async ({ page }) => {
+      await page.route("**/api/trucks", async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify([]), // fake empty list
+        });
+      });
+
+      await page.goto("http://localhost:3000/trucks");
+      await expect(page.getByText("No trucks available")).toBeVisible();
+    });
+  });
 });
